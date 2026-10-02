@@ -1,10 +1,18 @@
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const { open } = require('sqlite');
+
+// Ruta absoluta para que el servidor, el seeder y los tests usen siempre
+// el mismo archivo (backend/database.sqlite), sin importar desde qué
+// carpeta se ejecuten. Se puede cambiar con la variable DB_PATH.
+const DB_PATH = process.env.DB_PATH
+    ? path.resolve(process.env.DB_PATH)
+    : path.join(__dirname, '..', '..', 'database.sqlite');
 
 // Función para abrir la conexión a la base de datos
 async function connectDB() {
     return open({
-        filename: './database.sqlite', // Este es el archivo físico que se creará
+        filename: DB_PATH,
         driver: sqlite3.Database
     });
 }
