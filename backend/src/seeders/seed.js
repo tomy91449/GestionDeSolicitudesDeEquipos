@@ -1,7 +1,10 @@
-const { connectDB } = require('../database/db');
+const { connectDB, initDB } = require('../database/db');
 const { v4: uuidv4 } = require('uuid');
 
 async function seedEquipos() {
+
+    // Crea las tablas si todavía no existen (base nueva)
+    await initDB();
 
     const db = await connectDB();
 
