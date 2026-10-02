@@ -2,12 +2,17 @@ const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const { open } = require('sqlite');
 
-// Ruta absoluta para que el servidor, el seeder y los tests usen siempre
-// el mismo archivo (backend/database.sqlite), sin importar desde qué
-// carpeta se ejecuten. Se puede cambiar con la variable DB_PATH.
-const DB_PATH = process.env.DB_PATH
-    ? path.resolve(process.env.DB_PATH)
-    : path.join(__dirname, '..', '..', 'database.sqlite');
+// Ruta absoluta para que el servidor y el seeder usen siempre el mismo
+// archivo (backend/database.sqlite), sin importar desde qué carpeta se
+// ejecuten. Se puede cambiar con la variable DB_PATH; con ":memory:" la
+// base vive en memoria (la usan los tests).
+const resolverRuta = (ruta) => {
+    if (!ruta) return path.join(__dirname, '..', '..', 'database.sqlite');
+    if (ruta === ':memory:') return ruta;
+    return path.resolve(ruta);
+};
+
+const DB_PATH = resolverRuta(process.env.DB_PATH);
 
 // Conexión única compartida por toda la app. Se guarda la promesa para
 // que llamadas simultáneas mientras se abre esperen la misma conexión.

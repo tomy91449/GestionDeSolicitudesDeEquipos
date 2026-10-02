@@ -50,12 +50,12 @@ describe('SUITE COMPLETA SOLICITUDES', () => {
         const nuevoEquipo = await request(app)
             .post('/api/equipos')
             .set('Authorization', `Bearer ${adminToken}`)
-            .send({ 
-                nombre: 'Equipo de Prueba Solicitudes', 
-                tipo: 'Multimedia', 
+            .send({
+                codigoInventario: 'EQ-TEST-999',
+                nombre: 'Equipo de Prueba Solicitudes',
+                categoria: 'Multimedia',
                 estado: 'disponible',
-                codigo: 'EQ-TEST-999', // Campo común en arquitecturas UTN
-                descripcion: 'Creado para pruebas de solicitudes'
+                ubicacion: 'Laboratorio'
             });
 
         if (nuevoEquipo.body && nuevoEquipo.body.id) {

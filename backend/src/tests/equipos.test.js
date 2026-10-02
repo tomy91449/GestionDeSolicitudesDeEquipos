@@ -1,11 +1,20 @@
 const request = require('supertest');
 const app = require('../app'); // Con un solo punto de retroceso
 const { initDB } = require('../database/db');
+const Equipo = require('../models/Equipo');
 
 describe('Pruebas Módulo 2 - Equipos', () => {
 
     beforeAll(async () => {
         await initDB();
+
+        // La base de tests arranca vacía: cargamos un equipo de ejemplo
+        await Equipo.create({
+            codigoInventario: 'TEST-001',
+            nombre: 'Notebook de prueba',
+            categoria: 'Notebook',
+            ubicacion: 'Laboratorio'
+        });
     });
 
     test(
