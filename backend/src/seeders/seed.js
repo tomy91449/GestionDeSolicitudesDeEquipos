@@ -1,4 +1,4 @@
-const { connectDB, initDB } = require('../database/db');
+const { connectDB, initDB, closeDB } = require('../database/db');
 const { v4: uuidv4 } = require('uuid');
 
 async function seedEquipos() {
@@ -123,8 +123,12 @@ async function seedEquipos() {
 }
 
 seedEquipos()
-    .then(() => process.exit())
-    .catch((error) => {
+    .then(async () => {
+        await closeDB();
+        process.exit();
+    })
+    .catch(async (error) => {
         console.error(error);
+        await closeDB().catch(() => {});
         process.exit(1);
     });
