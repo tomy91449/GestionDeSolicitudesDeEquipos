@@ -5,8 +5,6 @@
 
 Aplicación web Full-Stack para gestionar un catálogo de equipos (notebooks, proyectores, cámaras, etc.) y coordinar sus solicitudes de préstamo, con roles, seguimiento de estados e historial de auditoría.
 
-> ⚠️ Hay problemas conocidos en el módulo de solicitudes que impiden usarlo de punta a punta. Ver [Problemas conocidos](#problemas-conocidos).
-
 ---
 
 ## Tecnologías
@@ -94,7 +92,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 
 | Rol         | Permisos                                                                       |
 |-------------|---------------------------------------------------------------------------------|
-| `usuario`   | Ver equipos, crear, ver y cancelar sus solicitudes                              |
+| `usuario`   | Ver equipos; crear, ver, editar y cancelar sus propias solicitudes             |
 | `encargado` | Lo mismo que `usuario`, más aprobar, rechazar, registrar devoluciones y ver el resumen |
 | `admin`     | Lo mismo que `encargado`, más crear, editar y eliminar equipos                  |
 
@@ -102,7 +100,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 
 ## API
 
-Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`. El token dura **2 horas**.
+Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`. El token dura **2 horas**. En las tablas, "gestor" significa `admin` o `encargado`, y "dueño" es el usuario que creó la solicitud.
 
 ### Auth
 
@@ -128,11 +126,12 @@ Estados de un equipo: `disponible`, `prestado`, `mantenimiento`.
 | Método | Endpoint                         | Acceso                | Descripción                  |
 |--------|----------------------------------|-----------------------|------------------------------|
 | POST   | `/api/solicitudes`               | Logueado              | Crear (`{ equipoId, fechaRetiro, fechaDevolucion, motivo }`) |
-| GET    | `/api/solicitudes`               | Logueado              | Listado                      |
+| GET    | `/api/solicitudes`               | Logueado              | Listado (propias, o todas si es gestor) |
 | GET    | `/api/solicitudes/resumen`       | `admin` / `encargado` | Métricas del panel           |
-| GET    | `/api/solicitudes/:id`           | Logueado              | Detalle                      |
-| GET    | `/api/solicitudes/:id/historial` | Logueado              | Historial de cambios         |
-| PATCH  | `/api/solicitudes/:id/cancelar`  | Logueado              | Cancelar                     |
+| GET    | `/api/solicitudes/:id`           | Dueño o gestor        | Detalle                      |
+| PUT    | `/api/solicitudes/:id`           | Dueño                 | Editar fechas y motivo (solo `pendiente`) |
+| GET    | `/api/solicitudes/:id/historial` | Dueño o gestor        | Historial de cambios         |
+| PATCH  | `/api/solicitudes/:id/cancelar`  | Dueño                 | Cancelar                     |
 | PATCH  | `/api/solicitudes/:id/aprobar`   | `admin` / `encargado` | Aprobar                      |
 | PATCH  | `/api/solicitudes/:id/rechazar`  | `admin` / `encargado` | Rechazar                     |
 | PATCH  | `/api/solicitudes/:id/devolver`  | `admin` / `encargado` | Registrar devolución         |
@@ -159,9 +158,11 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 
 ## Reglas de negocio
 
-- **Superposición de fechas:** no se puede crear una solicitud para un equipo si ya tiene otra `pendiente` o `aprobada` cuyas fechas se superpongan. En ese caso la API responde `400`.
-- **Ciclo de vida:** una solicitud nace `pendiente` y puede pasar a `aprobada`, `rechazada` o `cancelada`. Solo una `aprobada` puede pasar a `devuelta`.
-- **Auditoría:** cada cambio de estado se guarda en `historial_solicitudes` con el usuario, la fecha y hora, y los valores anterior y nuevo.
+- **Validaciones al crear o editar:** `equipoId`, `fechaRetiro`, `fechaDevolucion` (formato `AAAA-MM-DD`) y `motivo` son obligatorios, y la devolución no puede ser anterior al retiro. El equipo tiene que existir y no estar en `mantenimiento`.
+- **Superposición de fechas:** no se puede reservar un equipo si ya tiene otra solicitud `pendiente` o `aprobada` cuyas fechas se pisen con las pedidas. En ese caso la API responde `400`.
+- **Ciclo de vida:** `pendiente` puede pasar a `aprobada` o `rechazada` (admin/encargado), o a `cancelada` (solo el dueño). `aprobada` solo puede pasar a `devuelta`. Cualquier otra transición responde `400`. Al aprobar o rechazar se guarda quién lo hizo en `autorizadoPor`.
+- **Visibilidad:** un `usuario` solo ve y edita sus propias solicitudes; admin y encargado ven todas. Solo se pueden editar las `pendiente`.
+- **Auditoría:** la creación, cada edición y cada cambio de estado se guardan en `historial_solicitudes` con el usuario, la fecha y hora, y los valores anterior y nuevo.
 
 ## Seguridad
 
@@ -173,8 +174,7 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 
 ## Problemas conocidos
 
-- **El módulo de solicitudes no funciona de punta a punta.** `solicitudes.controller.js` llama a `listarSolicitudes`, `obtenerSolicitudPorId`, `obtenerHistorial`, `cambiarEstado` y `cancelarSolicitud`, pero [solicitudes.service.js](backend/src/services/solicitudes.service.js) solo exporta `crearSolicitud`. Además, `crearSolicitud` usa `db.all` sobre el módulo de `db.js` en vez de una conexión (`connectDB()`). Resultado: crear, listar, ver detalle e historial, aprobar, rechazar, devolver y cancelar responden error (`400`, `404` o `500`). Parece que la implementación completa quedó en [models/Solicitud.js](backend/src/models/Solicitud.js), cuyo encabezado dice `src/services/solicitudes.service.js`.
-- **Los tests de solicitudes no detectan esto**, porque varios aceptan `400` o `404` como resultado válido, y ese es justamente el código que devuelve el error.
+- **Los tests de solicitudes son permisivos:** por ejemplo, "Solicitud válida" también pasa si la API responde `400`, así que no alcanzan para detectar regresiones.
 - **`POST /api/auth/register` acepta `rol` desde el body**, así que cualquiera puede registrarse como `admin` llamando a la API directamente.
 - **La clave JWT está hardcodeada** en `auth.service.js` y `auth.middleware.js`. Debería ir en un `.env` (`dotenv` ya está instalado).
 - **Dependencias sin uso:** `bcrypt`, `pg`, `pg-hstore` y `sequelize`.

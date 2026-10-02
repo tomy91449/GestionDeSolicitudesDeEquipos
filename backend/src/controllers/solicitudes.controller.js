@@ -70,11 +70,36 @@ const listarSolicitudes = async (req, res) => {
  */
 const obtenerSolicitudPorId = async (req, res) => {
     try {
-        const data = await solicitudesService.obtenerSolicitudPorId(req.params.id);
+        const data = await solicitudesService.obtenerSolicitudPorId(
+            req.params.id,
+            req.usuario
+        );
         return res.json(data);
 
     } catch (e) {
-        return res.status(404).json({ error: e.message });
+        const status = e.statusCode || 500;
+        return res.status(status).json({ error: e.message });
+    }
+};
+
+/**
+ * EDITAR
+ */
+const editarSolicitud = async (req, res) => {
+    try {
+        const { fechaRetiro, fechaDevolucion, motivo } = req.body;
+
+        const data = await solicitudesService.editarSolicitud(
+            req.params.id,
+            { fechaRetiro, fechaDevolucion, motivo },
+            req.usuario
+        );
+
+        return res.json(data);
+
+    } catch (e) {
+        const status = e.statusCode || 400;
+        return res.status(status).json({ error: e.message });
     }
 };
 
@@ -83,11 +108,15 @@ const obtenerSolicitudPorId = async (req, res) => {
  */
 const obtenerHistorial = async (req, res) => {
     try {
-        const data = await solicitudesService.obtenerHistorial(req.params.id);
+        const data = await solicitudesService.obtenerHistorial(
+            req.params.id,
+            req.usuario
+        );
         return res.json(data);
 
     } catch (e) {
-        return res.status(500).json({ error: e.message });
+        const status = e.statusCode || 500;
+        return res.status(status).json({ error: e.message });
     }
 };
 
@@ -171,7 +200,7 @@ const devolverSolicitud = async (req, res) => {
  */
 const getResumen = async (req, res) => {
     try {
-        const data = await solicitudesService.obtenerResumenAdmin?.() || [];
+        const data = await solicitudesService.obtenerResumenAdmin();
         return res.json(data);
 
     } catch (e) {
@@ -184,6 +213,7 @@ module.exports = {
     cambiarEstado,
     listarSolicitudes,
     obtenerSolicitudPorId,
+    editarSolicitud,
     obtenerHistorial,
     cancelarSolicitud,
     aprobarSolicitud,
