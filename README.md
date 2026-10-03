@@ -53,7 +53,7 @@ cd backend
 npm install
 cp .env.example .env       # y completá JWT_SECRET con una clave aleatoria
 npm run dev                # crea database.sqlite y las tablas si no existen
-node src/seeders/seed.js   # en otra terminal, la primera vez: carga 8 equipos de ejemplo
+node src/seeders/seed.js   # carga 8 equipos y los usuarios de prueba
 ```
 
 Para generar una clave: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Si falta `JWT_SECRET`, el servidor no arranca y avisa qué hacer. El archivo `.env` está en `.gitignore`: no lo subas.
@@ -81,13 +81,15 @@ npm test
 
 ### Usuarios de prueba
 
-El seeder carga solo equipos, no usuarios. Un usuario común se crea desde `/registro`. Para crear un admin (o `encargado`), usá la API:
+El seeder crea estos usuarios (no los duplica si ya existen):
 
-```bash
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Admin","email":"admin@dd.com","password":"123456","rol":"admin"}'
-```
+| Rol         | Email              | Contraseña     |
+|-------------|--------------------|----------------|
+| `admin`     | `admin@dd.com`     | `admin123`     |
+| `encargado` | `encargado@dd.com` | `encargado123` |
+| `usuario`   | `usuario@dd.com`   | `usuario123`   |
+
+Son credenciales solo para desarrollo. El registro público (`/registro` o `POST /api/auth/register`) siempre crea usuarios con rol `usuario`, aunque se mande otro `rol`; los admin y encargados se crean únicamente desde el seeder.
 
 ---
 
@@ -109,7 +111,7 @@ Las rutas protegidas requieren la cabecera `Authorization: Bearer <token>`. El t
 
 | Método | Endpoint             | Body                                | Respuesta |
 |--------|----------------------|-------------------------------------|-----------|
-| POST   | `/api/auth/register` | `{ nombre, email, password, rol? }` | `201` usuario creado · `400` email duplicado o datos inválidos |
+| POST   | `/api/auth/register` | `{ nombre, email, password }`       | `201` usuario creado con rol `usuario` · `400` email duplicado o datos inválidos |
 | POST   | `/api/auth/login`    | `{ email, password }`               | `200` `{ token, usuario }` · `401` credenciales inválidas |
 
 ### Equipos
@@ -178,5 +180,4 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 ## Problemas conocidos
 
 - **Los tests de solicitudes son permisivos:** por ejemplo, "Solicitud válida" también pasa si la API responde `400`, así que no alcanzan para detectar regresiones.
-- **`POST /api/auth/register` acepta `rol` desde el body**, así que cualquiera puede registrarse como `admin` llamando a la API directamente.
 - **Dependencias sin uso:** `bcrypt`, `pg`, `pg-hstore` y `sequelize`.

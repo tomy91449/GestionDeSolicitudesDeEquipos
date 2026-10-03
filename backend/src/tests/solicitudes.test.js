@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 const { initDB } = require('../database/db');
+const Usuario = require('../models/Usuario');
 
 describe('SUITE COMPLETA SOLICITUDES', () => {
     let adminToken;
@@ -21,10 +22,9 @@ describe('SUITE COMPLETA SOLICITUDES', () => {
             .send({ email: 'admin@utn.com', password: '123456' });
 
         if (adminLogin.statusCode === 401 || !adminLogin.body.token) {
-            await request(app)
-                .post('/api/auth/register')
-                .send({ nombre: 'Admin', email: 'admin@utn.com', password: '123456', rol: 'admin' });
-            
+            // El registro público no permite elegir rol: el admin se crea con el modelo
+            await Usuario.crear({ nombre: 'Admin', email: 'admin@utn.com', password: '123456', rol: 'admin' });
+
             adminLogin = await request(app)
                 .post('/api/auth/login')
                 .send({ email: 'admin@utn.com', password: '123456' });

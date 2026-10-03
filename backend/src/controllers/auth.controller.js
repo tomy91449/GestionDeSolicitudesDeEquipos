@@ -2,8 +2,9 @@ const authService = require('../services/auth.service');
 
 const register = async (req, res, next) => {
     try {
-        const { nombre, email, password, rol } = req.body;
-        const nuevoUsuario = await authService.registrarUsuario(nombre, email, password, rol);
+        // El rol del body se ignora a propósito: el registro público solo crea usuarios comunes
+        const { nombre, email, password } = req.body;
+        const nuevoUsuario = await authService.registrarUsuario(nombre, email, password);
         res.status(201).json(nuevoUsuario);
     } catch (error) {
         // Le pasamos el error al error.middleware.js
