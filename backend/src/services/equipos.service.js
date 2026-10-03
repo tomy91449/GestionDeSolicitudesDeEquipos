@@ -213,7 +213,9 @@ const eliminarEquipo = async (id) => {
     );
 
     if (!equipo) {
-        throw new Error('Equipo no encontrado');
+        const error = new Error('Equipo no encontrado');
+        error.statusCode = 404;
+        throw error;
     }
 
     // No se borra si tiene solicitudes (de cualquier estado): quedarían

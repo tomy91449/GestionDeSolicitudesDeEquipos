@@ -275,4 +275,10 @@ describe('Equipos - alta, edición y baja (admin)', () => {
         const borrado = await request(app).get(`/api/equipos/${creado.body.id}`);
         expect(borrado.statusCode).toBe(404);
     });
+
+    test('Borrar un equipo inexistente debe dar 404', async () => {
+        const response = await eliminar('id-inexistente');
+
+        expect(response.statusCode).toBe(404);
+    });
 });
