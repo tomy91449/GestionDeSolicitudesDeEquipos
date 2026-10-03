@@ -115,4 +115,6 @@ class Equipo {
     }
 }
 
+Equipo.ESTADOS_VALIDOS = ESTADOS_VALIDOS;
+
 module.exports = Equipo;

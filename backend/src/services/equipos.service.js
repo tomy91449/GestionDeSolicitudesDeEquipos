@@ -1,5 +1,6 @@
 const { connectDB } = require('../database/db');
 const { v4: uuidv4 } = require('uuid');
+const Equipo = require('../models/Equipo');
 
 const obtenerEquipos = async () => {
     const db = await connectDB();
@@ -25,6 +26,15 @@ const obtenerEquipoPorId = async (id) => {
 };
 
 const crearEquipo = async (datos) => {
+
+    // Campos obligatorios y estado dentro de los permitidos
+    Equipo.validar(datos);
+
+    if (!datos.estado) {
+        throw new Error(
+            `El estado es obligatorio. Debe ser: ${Equipo.ESTADOS_VALIDOS.join(', ')}`
+        );
+    }
 
     const db = await connectDB();
 

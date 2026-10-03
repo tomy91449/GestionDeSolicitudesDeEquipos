@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../app'); // Con un solo punto de retroceso
 const { initDB } = require('../database/db');
 const Equipo = require('../models/Equipo');
+const Usuario = require('../models/Usuario');
 
 describe('Pruebas Módulo 2 - Equipos', () => {
 
@@ -111,4 +112,63 @@ describe('Pruebas Módulo 2 - Equipos', () => {
             ).toBe(404);
         }
     );
+});
+
+describe('Equipos - alta, edición y baja (admin)', () => {
+
+    let adminToken;
+
+    const nuevoEquipo = (codigo, extra = {}) => ({
+        codigoInventario: codigo,
+        nombre: 'Equipo de prueba',
+        categoria: 'Notebook',
+        ubicacion: 'Laboratorio',
+        estado: 'disponible',
+        ...extra
+    });
+
+    const crear = (datos) => request(app)
+        .post('/api/equipos')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(datos);
+
+    beforeAll(async () => {
+        await initDB();
+
+        await Usuario.crear({
+            nombre: 'Admin Equipos',
+            email: 'admin-equipos@test.com',
+            password: '123456',
+            rol: 'admin'
+        });
+
+        const login = await request(app)
+            .post('/api/auth/login')
+            .send({ email: 'admin-equipos@test.com', password: '123456' });
+
+        adminToken = login.body.token;
+    });
+
+    test('Debe rechazar un equipo sin estado con un mensaje claro', async () => {
+        const { estado, ...sinEstado } = nuevoEquipo('VAL-001');
+
+        const response = await crear(sinEstado);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/estado es obligatorio/i);
+    });
+
+    test('Debe rechazar un estado que no existe', async () => {
+        const response = await crear(nuevoEquipo('VAL-002', { estado: 'roto' }));
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/estado inválido/i);
+    });
+
+    test('Debe crear un equipo válido', async () => {
+        const response = await crear(nuevoEquipo('VAL-003'));
+
+        expect(response.statusCode).toBe(201);
+        expect(response.body.estado).toBe('disponible');
+    });
 });
