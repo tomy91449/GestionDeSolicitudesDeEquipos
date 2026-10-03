@@ -77,9 +77,9 @@ const ListadoSolicitudes = () => {
             <div style={{ maxWidth:'1200px', margin:'0 auto', position:'relative', zIndex:10, animation:'slideUp .5s ease both' }}>
 
                 {/* Header */}
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom:28 }}>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:16, justifyContent:'space-between', alignItems:'flex-end', marginBottom:28 }}>
                     <div>
-                        <p style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
+                        <p style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
                             Sistema de control de equipamiento
                         </p>
                         <h1 style={{ color:'#fff', margin:0, fontSize:24, fontWeight:700, letterSpacing:'-.4px' }}>
@@ -96,7 +96,7 @@ const ListadoSolicitudes = () => {
 
                     {/* Sub-header */}
                     <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20 }}>
-                        <span style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1px', textTransform:'uppercase' }}>
+                        <span style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1px', textTransform:'uppercase' }}>
                             Total registradas
                         </span>
                         <span style={{ background:'rgba(79,110,255,.2)', border:'1px solid rgba(79,110,255,.3)', color:'#818cf8', borderRadius:20, padding:'2px 10px', fontSize:12, fontWeight:700 }}>
@@ -107,10 +107,10 @@ const ListadoSolicitudes = () => {
                     <div style={{ height:1, background:'rgba(255,255,255,.07)', marginBottom:24 }} />
 
                     {loading ? (
-                        <p style={{ color:'rgba(255,255,255,.3)', fontSize:13, textAlign:'center', padding:'40px 0' }}>Cargando solicitudes...</p>
+                        <p style={{ color:'var(--text-subtle)', fontSize:13, textAlign:'center', padding:'40px 0' }}>Cargando solicitudes...</p>
                     ) : solicitudes.length === 0 ? (
                         <div style={{ textAlign:'center', padding:'40px 0' }}>
-                            <p style={{ color:'rgba(255,255,255,.3)', fontSize:13, margin:'0 0 12px' }}>No hay solicitudes registradas.</p>
+                            <p style={{ color:'var(--text-subtle)', fontSize:13, margin:'0 0 12px' }}>No hay solicitudes registradas.</p>
                             <Link to="/solicitudes/nueva" className="ls-btn-nueva">
                                 + Crear la primera
                             </Link>

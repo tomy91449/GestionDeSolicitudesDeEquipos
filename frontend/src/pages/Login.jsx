@@ -34,7 +34,7 @@ const Login = () => {
             minHeight: '100vh', display: 'flex', alignItems: 'center',
             justifyContent: 'center', fontFamily: "'Segoe UI', sans-serif",
             background: 'linear-gradient(135deg, #060818 0%, #0d1230 40%, #0a1628 70%, #050d1f 100%)',
-            position: 'relative', overflow: 'hidden'
+            position: 'relative', overflow: 'hidden', padding: '24px 16px'
         }}>
             <style>{`
                 @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
@@ -47,7 +47,7 @@ const Login = () => {
                 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
                 @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
                 .glass-input-login { width:100%;padding:12px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;outline:none;color:#fff;font-size:14px;transition:all .25s ease;box-sizing:border-box; }
-                .glass-input-login::placeholder { color:rgba(255,255,255,.25); }
+                .glass-input-login::placeholder { color:var(--text-subtle); }
                 .glass-input-login:focus { border-color:rgba(99,130,255,.8);background:rgba(99,130,255,.08);box-shadow:0 0 0 3px rgba(99,130,255,.15); }
                 .btn-login-main { width:100%;padding:13px;background:linear-gradient(135deg,#4f6eff,#7c3aed);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.8px;box-shadow:0 4px 20px rgba(79,110,255,.4);transition:all .25s ease;margin-top:8px; }
                 .btn-login-main:hover { transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,110,255,.6); }
@@ -142,8 +142,8 @@ const Login = () => {
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '1px solid rgba(255,255,255,.1)',
                 borderRadius: '24px',
-                padding: '44px 40px',
-                width: '360px',
+                padding: 'clamp(28px, 7vw, 44px) clamp(20px, 6vw, 40px)',
+                width: '100%', maxWidth: '360px',
                 animation: 'slideUp .6s ease both, glow 3s ease-in-out infinite 1s'
             }}>
 
@@ -175,7 +175,7 @@ const Login = () => {
                 <p style={{ color:'#fff', fontSize:'20px', fontWeight:'700', textAlign:'center', margin:'0 0 4px', letterSpacing:'-.3px' }}>
                     Bienvenido<span className="cursor-blink" />
                 </p>
-                <p style={{ color:'rgba(255,255,255,.4)', fontSize:'13px', textAlign:'center', margin:'0 0 28px' }}>
+                <p style={{ color:'var(--text-subtle)', fontSize:'13px', textAlign:'center', margin:'0 0 28px' }}>
                     Sistema de control de equipamiento
                 </p>
 
@@ -201,7 +201,7 @@ const Login = () => {
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom:'16px' }}>
-                        <label htmlFor="login-email" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="login-email" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'var(--text-subtle)', marginBottom:'8px' }}>
                             EMAIL
                         </label>
                         <input
@@ -215,7 +215,7 @@ const Login = () => {
                     </div>
 
                     <div style={{ marginBottom:'8px' }}>
-                        <label htmlFor="login-password" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="login-password" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'var(--text-subtle)', marginBottom:'8px' }}>
                             CONTRASEÑA
                         </label>
                         <input
@@ -233,7 +233,7 @@ const Login = () => {
                     </button>
                 </form>
 
-                <p style={{ textAlign:'center', marginTop:'20px', fontSize:'13px', color:'rgba(255,255,255,.35)' }}>
+                <p style={{ textAlign:'center', marginTop:'20px', fontSize:'13px', color:'var(--text-subtle)' }}>
                     ¿No tenés cuenta?{' '}
                     <Link to="/registro" style={{ color:'#818cf8', fontWeight:'600', textDecoration:'none' }}>
                         Registrate acá
@@ -243,7 +243,7 @@ const Login = () => {
                 {/* Badge seguridad */}
                 <div style={{
                     textAlign:'center', marginTop:'24px',
-                    fontSize:'11px', color:'rgba(255,255,255,.2)',
+                    fontSize:'11px', color:'var(--text-subtle)',
                     borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:'16px'
                 }}>
                     <ShieldCheckIcon size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt

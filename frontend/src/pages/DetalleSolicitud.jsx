@@ -36,7 +36,7 @@ const STYLES = `
     }
     .ds-label {
         display:block; font-size:10px; font-weight:700;
-        letter-spacing:1.4px; color:rgba(255,255,255,.35);
+        letter-spacing:1.4px; color:var(--text-subtle);
         margin-bottom:6px; text-transform:uppercase;
     }
     .ds-value {
@@ -51,7 +51,7 @@ const STYLES = `
         transition:all .2s ease; box-sizing:border-box;
         font-family:'Segoe UI', sans-serif;
     }
-    .ds-input::placeholder { color:rgba(255,255,255,.2); }
+    .ds-input::placeholder { color:var(--text-subtle); }
     .ds-input:focus {
         border-color:rgba(99,130,255,.8);
         background:rgba(99,130,255,.08);
@@ -210,7 +210,7 @@ const DetalleSolicitud = () => {
 
                 {/* Header */}
                 <div style={{ marginBottom:28 }}>
-                    <p style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
+                    <p style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
                         Sistema de control de equipamiento
                     </p>
                     <h2 style={{ color:'#fff', margin:0, fontSize:22, fontWeight:700, letterSpacing:'-.3px' }}>
@@ -228,7 +228,7 @@ const DetalleSolicitud = () => {
                 <div className="ds-glass" style={{ padding:'28px 32px', marginBottom:20 }}>
 
                     {/* Header info */}
-                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:24 }}>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:16, justifyContent:'space-between', alignItems:'flex-start', marginBottom:24 }}>
                         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
                             <div>
                                 <span className="ds-label">Equipo</span>
@@ -272,7 +272,7 @@ const DetalleSolicitud = () => {
                             </div>
                         </div>
                     ) : (
-                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:20 }}>
+                        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:20 }}>
                             <div>
                                 <span className="ds-label">Fecha de retiro</span>
                                 <span className="ds-value">{solicitud.fechaRetiro}</span>
@@ -315,7 +315,7 @@ const DetalleSolicitud = () => {
                     </h3>
 
                     {historial.length === 0 ? (
-                        <p style={{ color:'rgba(255,255,255,.3)', fontSize:13, margin:0 }}>Sin cambios registrados.</p>
+                        <p style={{ color:'var(--text-subtle)', fontSize:13, margin:0 }}>Sin cambios registrados.</p>
                     ) : (
                         <div>
                             {historial.map(h => (
@@ -323,8 +323,8 @@ const DetalleSolicitud = () => {
                                     <div style={{ width:8, height:8, borderRadius:'50%', background:'#4f6eff', marginTop:5, flexShrink:0 }} />
                                     <div>
                                         <span style={{ color:'rgba(255,255,255,.8)', fontSize:13, fontWeight:600 }}>{h.usuarioNombre}</span>
-                                        <span style={{ color:'rgba(255,255,255,.4)', fontSize:13 }}> — {h.accion}</span>
-                                        <div style={{ color:'rgba(255,255,255,.25)', fontSize:11, marginTop:3, letterSpacing:'.3px' }}>
+                                        <span style={{ color:'var(--text-subtle)', fontSize:13 }}> — {h.accion}</span>
+                                        <div style={{ color:'var(--text-subtle)', fontSize:11, marginTop:3, letterSpacing:'.3px' }}>
                                             {new Date(h.fechaHora).toLocaleString()}
                                         </div>
                                     </div>

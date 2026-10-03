@@ -68,7 +68,7 @@ const ResumenAdmin = () => {
     if (loading) return (
         <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
             background:'linear-gradient(135deg, #060818 0%, #0d1230 40%, #0a1628 70%, #050d1f 100%)',
-            color:'rgba(255,255,255,.4)', fontFamily:"'Segoe UI', sans-serif", fontSize:14 }}>
+            color:'var(--text-subtle)', fontFamily:"'Segoe UI', sans-serif", fontSize:14 }}>
             Cargando panel...
         </div>
     );
@@ -99,13 +99,13 @@ const ResumenAdmin = () => {
 
                 {/* Header */}
                 <div style={{ marginBottom:36 }}>
-                    <p style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
+                    <p style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
                         Sistema de control de equipamiento
                     </p>
                     <h1 style={{ color:'#fff', margin:0, fontSize:26, fontWeight:700, letterSpacing:'-.4px' }}>
                         Panel de administración
                     </h1>
-                    <p style={{ color:'rgba(255,255,255,.3)', fontSize:13, margin:'6px 0 0' }}>
+                    <p style={{ color:'var(--text-subtle)', fontSize:13, margin:'6px 0 0' }}>
                         Resumen de solicitudes del sistema
                     </p>
                 </div>
@@ -119,7 +119,7 @@ const ResumenAdmin = () => {
 
                             <div style={{ position:'relative', zIndex:1 }}>
                                 <div style={{ marginBottom:12 }}><Icono size={28} weight="duotone" color={accent} aria-hidden="true" /></div>
-                                <div style={{ color:'rgba(255,255,255,.4)', fontSize:10, letterSpacing:'1.5px', textTransform:'uppercase', marginBottom:8 }}>
+                                <div style={{ color:'var(--text-subtle)', fontSize:10, letterSpacing:'1.5px', textTransform:'uppercase', marginBottom:8 }}>
                                     {label}
                                 </div>
                                 <div style={{ color: accent, fontSize:44, fontWeight:800, lineHeight:1, letterSpacing:'-2px', animation:'countUp .4s ease both' }}>
@@ -134,7 +134,7 @@ const ResumenAdmin = () => {
                 {/* Barra proporcional */}
                 {resumen.total > 0 && (
                     <div className="ra-glass" style={{ padding:'24px 28px' }}>
-                        <p style={{ color:'rgba(255,255,255,.3)', fontSize:11, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 14px' }}>
+                        <p style={{ color:'var(--text-subtle)', fontSize:11, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 14px' }}>
                             Distribución por estado
                         </p>
                         <div style={{ display:'flex', height:10, borderRadius:6, overflow:'hidden', gap:2 }}>
@@ -159,7 +159,7 @@ const ResumenAdmin = () => {
                             ].map(({ key, color, label }) => (
                                 <div key={key} style={{ display:'flex', alignItems:'center', gap:6 }}>
                                     <div style={{ width:8, height:8, borderRadius:2, background:color }} />
-                                    <span style={{ color:'rgba(255,255,255,.4)', fontSize:12 }}>{label}</span>
+                                    <span style={{ color:'var(--text-subtle)', fontSize:12 }}>{label}</span>
                                     <span style={{ color:'rgba(255,255,255,.6)', fontSize:12, fontWeight:600 }}>
                                         {resumen.total > 0 ? Math.round((resumen[key] / resumen.total) * 100) : 0}%
                                     </span>

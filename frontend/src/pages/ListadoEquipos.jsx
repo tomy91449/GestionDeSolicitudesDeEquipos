@@ -89,7 +89,7 @@ const ListadoEquipos = () => {
 
                 {/* Header */}
                 <div style={{ marginBottom:28 }}>
-                    <p style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
+                    <p style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1.5px', textTransform:'uppercase', margin:'0 0 6px' }}>
                         Sistema de control de equipamiento
                     </p>
                     <h1 style={{ color:'#fff', margin:0, fontSize:24, fontWeight:700, letterSpacing:'-.4px' }}>
@@ -114,17 +114,17 @@ const ListadoEquipos = () => {
 
                     {/* Conteo */}
                     <div style={{ marginBottom:16, display:'flex', alignItems:'center', gap:10 }}>
-                        <span style={{ color:'rgba(255,255,255,.3)', fontSize:12, letterSpacing:'1px', textTransform:'uppercase' }}>
+                        <span style={{ color:'var(--text-subtle)', fontSize:12, letterSpacing:'1px', textTransform:'uppercase' }}>
                             Mostrando
                         </span>
                         <span style={{ background:'rgba(79,110,255,.2)', border:'1px solid rgba(79,110,255,.3)', color:'#818cf8', borderRadius:20, padding:'2px 10px', fontSize:12, fontWeight:700 }}>
                             {loading ? '...' : equiposFiltrados.length}
                         </span>
-                        <span style={{ color:'rgba(255,255,255,.3)', fontSize:12 }}>equipos</span>
+                        <span style={{ color:'var(--text-subtle)', fontSize:12 }}>equipos</span>
                     </div>
 
                     {loading ? (
-                        <p style={{ color:'rgba(255,255,255,.3)', fontSize:13, textAlign:'center', padding:'40px 0' }}>Cargando equipos...</p>
+                        <p style={{ color:'var(--text-subtle)', fontSize:13, textAlign:'center', padding:'40px 0' }}>Cargando equipos...</p>
                     ) : (
                         <TablaEquipos equipos={equiposFiltrados} />
                     )}

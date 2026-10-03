@@ -27,7 +27,7 @@ const STYLES = `
     }
     .fs-label {
         display:block; font-size:10px; font-weight:700;
-        letter-spacing:1.4px; color:rgba(255,255,255,.35);
+        letter-spacing:1.4px; color:var(--text-subtle);
         margin-bottom:8px; text-transform:uppercase;
     }
     .fs-input {
@@ -39,7 +39,7 @@ const STYLES = `
         transition:all .2s ease; box-sizing:border-box;
         font-family:'Segoe UI', sans-serif;
     }
-    .fs-input::placeholder { color:rgba(255,255,255,.2); }
+    .fs-input::placeholder { color:var(--text-subtle); }
     .fs-input:focus {
         border-color:rgba(99,130,255,.8);
         background:rgba(99,130,255,.08);
@@ -131,7 +131,7 @@ const FormularioSolicitud = () => {
                         <ClipboardTextIcon size={24} weight="bold" color="#fff" aria-hidden="true" />
                     </div>
                     <p style={{ color:'#fff', fontSize:19, fontWeight:700, margin:'0 0 4px', letterSpacing:'-.3px' }}>Nueva solicitud</p>
-                    <p style={{ color:'rgba(255,255,255,.35)', fontSize:13, margin:0 }}>Completá los datos del pedido</p>
+                    <p style={{ color:'var(--text-subtle)', fontSize:13, margin:0 }}>Completá los datos del pedido</p>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:18 }}>
@@ -150,7 +150,7 @@ const FormularioSolicitud = () => {
                     </div>
 
                     {/* Fechas */}
-                    <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(170px, 1fr))', gap:14 }}>
                         <div>
                             <label htmlFor="solicitud-retiro" className="fs-label">Fecha de retiro</label>
                             <input id="solicitud-retiro" type="date" name="fechaRetiro" value={form.fechaRetiro} min={hoyLocal()} onChange={handleChange} required className="fs-input" />
@@ -185,7 +185,7 @@ const FormularioSolicitud = () => {
                 </form>
 
                 {/* Badge */}
-                <div style={{ textAlign:'center', marginTop:20, fontSize:11, color:'rgba(255,255,255,.18)', borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:14 }}>
+                <div style={{ textAlign:'center', marginTop:20, fontSize:11, color:'var(--text-subtle)', borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:14 }}>
                     <ShieldCheckIcon size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
                 </div>
             </div>
