@@ -168,7 +168,7 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 
 ## Reglas de negocio
 
-- **Validaciones al crear o editar:** `equipoId`, `fechaRetiro`, `fechaDevolucion` (formato `AAAA-MM-DD`) y `motivo` son obligatorios, y la devolución no puede ser anterior al retiro. El equipo tiene que existir y no estar en `mantenimiento`.
+- **Validaciones al crear o editar:** `equipoId`, `fechaRetiro`, `fechaDevolucion` (formato `AAAA-MM-DD`) y `motivo` son obligatorios, la fecha de retiro no puede ser anterior a hoy y la devolución no puede ser anterior al retiro. El equipo tiene que existir y no estar en `mantenimiento`.
 - **Superposición de fechas:** no se puede reservar un equipo si ya tiene otra solicitud `pendiente` o `aprobada` cuyas fechas se pisen con las pedidas. En ese caso la API responde `400`.
 - **Ciclo de vida:** `pendiente` puede pasar a `aprobada` o `rechazada` (admin/encargado), o a `cancelada` (solo el dueño). `aprobada` puede pasar a `devuelta` (admin/encargado) o a `cancelada` (el dueño, solo antes de la fecha de retiro). Cualquier otra transición responde `400`. Al aprobar o rechazar se guarda quién lo hizo en `autorizadoPor`.
 - **Visibilidad:** un `usuario` solo ve y edita sus propias solicitudes; admin y encargado ven todas. Solo se pueden editar las `pendiente`.

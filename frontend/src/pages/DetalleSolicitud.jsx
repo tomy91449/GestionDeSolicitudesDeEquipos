@@ -10,13 +10,7 @@ import {
 } from '../services/solicitudes.service';
 
 import AccionesSolicitud from '../components/AccionesSolicitud';
-
-// Fecha local de hoy en formato AAAA-MM-DD (toISOString usaría UTC)
-const hoyLocal = () => {
-    const d = new Date();
-    const dosDigitos = (n) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${dosDigitos(d.getMonth() + 1)}-${dosDigitos(d.getDate())}`;
-};
+import { hoyLocal } from '../utils/fechas';
 
 const STYLES = `
     @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -261,11 +255,11 @@ const DetalleSolicitud = () => {
                         <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
                             <div>
                                 <label className="ds-label">Fecha de retiro</label>
-                                <input type="date" value={fechaRetiro} onChange={e => setFechaRetiro(e.target.value)} className="ds-input" />
+                                <input type="date" value={fechaRetiro} min={hoyLocal()} onChange={e => setFechaRetiro(e.target.value)} className="ds-input" />
                             </div>
                             <div>
                                 <label className="ds-label">Fecha de devolución</label>
-                                <input type="date" value={fechaDevolucion} onChange={e => setFechaDevolucion(e.target.value)} className="ds-input" />
+                                <input type="date" value={fechaDevolucion} min={fechaRetiro || hoyLocal()} onChange={e => setFechaDevolucion(e.target.value)} className="ds-input" />
                             </div>
                             <div>
                                 <label className="ds-label">Motivo</label>
