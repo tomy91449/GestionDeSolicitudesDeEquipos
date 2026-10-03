@@ -199,4 +199,58 @@ describe('SUITE COMPLETA SOLICITUDES', () => {
             .set('Authorization', `Bearer ${adminToken}`);
         expect([400, 404]).toContain(res.statusCode);
     });
+
+    // =========================================================
+    // CANCELACIÓN
+    // =========================================================
+    const crearSolicitud = async (fechaRetiro, fechaDevolucion) => {
+        const res = await request(app)
+            .post('/api/solicitudes')
+            .set('Authorization', `Bearer ${userToken}`)
+            .send({ equipoId, fechaRetiro, fechaDevolucion, motivo: 'Prueba de cancelación' });
+        return res.body.id;
+    };
+
+    const accion = (id, nombre, token) => request(app)
+        .patch(`/api/solicitudes/${id}/${nombre}`)
+        .set('Authorization', `Bearer ${token}`);
+
+    test('Se puede cancelar una aprobada antes de la fecha de retiro', async () => {
+        const id = await crearSolicitud('2031-03-01', '2031-03-02');
+        await accion(id, 'aprobar', adminToken);
+
+        const res = await accion(id, 'cancelar', userToken);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.estado).toBe('cancelada');
+    });
+
+    test('No se puede cancelar una aprobada cuando ya llegó la fecha de retiro', async () => {
+        const id = await crearSolicitud('2020-03-01', '2020-03-02');
+        await accion(id, 'aprobar', adminToken);
+
+        const res = await accion(id, 'cancelar', userToken);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toMatch(/fecha de retiro/i);
+    });
+
+    test('No se puede cancelar una rechazada', async () => {
+        const id = await crearSolicitud('2031-04-01', '2031-04-02');
+        await accion(id, 'rechazar', adminToken);
+
+        const res = await accion(id, 'cancelar', userToken);
+
+        expect(res.statusCode).toBe(400);
+    });
+
+    test('No se puede cancelar una devuelta', async () => {
+        const id = await crearSolicitud('2031-05-01', '2031-05-02');
+        await accion(id, 'aprobar', adminToken);
+        await accion(id, 'devolver', adminToken);
+
+        const res = await accion(id, 'cancelar', userToken);
+
+        expect(res.statusCode).toBe(400);
+    });
 });

@@ -8,7 +8,7 @@ const ROLES_GESTION = ['admin', 'encargado'];
 // Estado actual -> estados a los que puede pasar
 const TRANSICIONES = {
     pendiente: ['aprobada', 'rechazada', 'cancelada'],
-    aprobada: ['devuelta'],
+    aprobada: ['devuelta', 'cancelada'],
     rechazada: [],
     cancelada: [],
     devuelta: []
@@ -23,6 +23,13 @@ const httpError = (mensaje, statusCode) => {
 };
 
 const esGestor = (usuario) => ROLES_GESTION.includes(usuario.rol);
+
+// Fecha local de hoy en formato AAAA-MM-DD (toISOString usaría UTC)
+const hoy = () => {
+    const d = new Date();
+    const dosDigitos = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${dosDigitos(d.getMonth() + 1)}-${dosDigitos(d.getDate())}`;
+};
 
 const esFechaValida = (fecha) =>
     typeof fecha === 'string' &&
@@ -235,7 +242,9 @@ const cambiarEstado = async (id, nuevoEstado, usuarioId) => {
 };
 
 /**
- * Solo el dueño puede cancelar, y solo si está pendiente.
+ * Solo el dueño puede cancelar: las pendientes siempre, y las aprobadas
+ * mientras no haya llegado la fecha de retiro (después el equipo pudo
+ * haberse retirado y hay que registrar la devolución).
  */
 const cancelarSolicitud = async (id, usuarioId) => {
 
@@ -246,6 +255,9 @@ const cancelarSolicitud = async (id, usuarioId) => {
 
     if (solicitud.usuarioId !== usuarioId)
         throw httpError('Solo el solicitante puede cancelar la solicitud', 403);
+
+    if (solicitud.estado === 'aprobada' && solicitud.fechaRetiro <= hoy())
+        throw httpError('No se puede cancelar: ya llegó la fecha de retiro del equipo', 400);
 
     return cambiarEstado(id, 'cancelada', usuarioId);
 };
