@@ -195,7 +195,7 @@ const Registro = () => {
                 </p>
 
                 {error && (
-                    <div style={{
+                    <div role="alert" style={{
                         background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)',
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#fca5a5', fontSize:'13px', marginBottom:'16px'
@@ -205,7 +205,7 @@ const Registro = () => {
                 )}
 
                 {mensaje && (
-                    <div style={{
+                    <div role="status" style={{
                         background:'rgba(16,185,129,.15)', border:'1px solid rgba(16,185,129,.3)',
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#6ee7b7', fontSize:'13px', marginBottom:'16px'
@@ -216,45 +216,55 @@ const Registro = () => {
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom:'16px' }}>
-                        <label style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="registro-nombre" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
                             NOMBRE COMPLETO
                         </label>
                         <input
+                            id="registro-nombre"
                             type="text"
                             value={nombre}
                             onChange={e => setNombre(e.target.value)}
                             placeholder="Tu nombre"
+                            autoComplete="name"
                             required
                             className="glass-input-reg"
                         />
                     </div>
 
                     <div style={{ marginBottom:'16px' }}>
-                        <label style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="registro-email" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
                             EMAIL
                         </label>
                         <input
+                            id="registro-email"
                             type="email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="tu@email.com"
+                            autoComplete="email"
                             required
                             className="glass-input-reg"
                         />
                     </div>
 
                     <div style={{ marginBottom:'8px' }}>
-                        <label style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="registro-password" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
                             CONTRASEÑA
                         </label>
                         <input
+                            id="registro-password"
                             type="password"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             placeholder="••••••••"
+                            autoComplete="new-password"
+                            aria-describedby="registro-password-ayuda"
                             required
                             className="glass-input-reg"
                         />
+                        <p id="registro-password-ayuda" style={{ margin:'6px 0 0', fontSize:'12px', color:'var(--text-subtle)' }}>
+                            Mínimo 6 caracteres.
+                        </p>
                     </div>
 
                     <button type="submit" className="btn-reg-main">

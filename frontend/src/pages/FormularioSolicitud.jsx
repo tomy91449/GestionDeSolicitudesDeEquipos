@@ -137,8 +137,8 @@ const FormularioSolicitud = () => {
 
                     {/* Equipo */}
                     <div>
-                        <label className="fs-label">Equipo</label>
-                        <select name="equipoId" value={form.equipoId} onChange={handleChange} required disabled={loadingEquipos} className="fs-input">
+                        <label htmlFor="solicitud-equipo" className="fs-label">Equipo</label>
+                        <select id="solicitud-equipo" name="equipoId" value={form.equipoId} onChange={handleChange} required disabled={loadingEquipos} className="fs-input">
                             <option value="">{loadingEquipos ? 'Cargando equipos...' : 'Seleccionar equipo'}</option>
                             {equipos.map(eq => (
                                 <option key={eq.id} value={eq.id}>
@@ -151,19 +151,20 @@ const FormularioSolicitud = () => {
                     {/* Fechas */}
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
                         <div>
-                            <label className="fs-label">Fecha de retiro</label>
-                            <input type="date" name="fechaRetiro" value={form.fechaRetiro} min={hoyLocal()} onChange={handleChange} required className="fs-input" />
+                            <label htmlFor="solicitud-retiro" className="fs-label">Fecha de retiro</label>
+                            <input id="solicitud-retiro" type="date" name="fechaRetiro" value={form.fechaRetiro} min={hoyLocal()} onChange={handleChange} required className="fs-input" />
                         </div>
                         <div>
-                            <label className="fs-label">Fecha de devolución</label>
-                            <input type="date" name="fechaDevolucion" value={form.fechaDevolucion} min={form.fechaRetiro || hoyLocal()} onChange={handleChange} required className="fs-input" />
+                            <label htmlFor="solicitud-devolucion" className="fs-label">Fecha de devolución</label>
+                            <input id="solicitud-devolucion" type="date" name="fechaDevolucion" value={form.fechaDevolucion} min={form.fechaRetiro || hoyLocal()} onChange={handleChange} required className="fs-input" />
                         </div>
                     </div>
 
                     {/* Motivo */}
                     <div>
-                        <label className="fs-label">Motivo</label>
+                        <label htmlFor="solicitud-motivo" className="fs-label">Motivo</label>
                         <textarea
+                            id="solicitud-motivo"
                             name="motivo" value={form.motivo} onChange={handleChange}
                             placeholder="Explicá para qué necesitás el equipo..."
                             rows={4} required className="fs-input" style={{ resize:'vertical' }}
@@ -172,7 +173,7 @@ const FormularioSolicitud = () => {
 
                     {/* Error */}
                     {error && (
-                        <div style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13 }}>
+                        <div role="alert" style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13 }}>
                             ⚠️ {error}
                         </div>
                     )}

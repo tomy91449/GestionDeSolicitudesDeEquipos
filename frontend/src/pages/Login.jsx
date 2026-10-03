@@ -189,7 +189,7 @@ const Login = () => {
                 )}
 
                 {error && (
-                    <div style={{
+                    <div role="alert" style={{
                         background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)',
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#fca5a5', fontSize:'13px', marginBottom:'16px'
@@ -200,25 +200,29 @@ const Login = () => {
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom:'16px' }}>
-                        <label style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="login-email" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
                             EMAIL
                         </label>
                         <input
+                            id="login-email"
                             type="email" value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="usuario@institución.edu"
+                            autoComplete="email"
                             required className="glass-input-login"
                         />
                     </div>
 
                     <div style={{ marginBottom:'8px' }}>
-                        <label style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
+                        <label htmlFor="login-password" style={{ display:'block', fontSize:'11px', fontWeight:'600', letterSpacing:'1.2px', color:'rgba(255,255,255,.4)', marginBottom:'8px' }}>
                             CONTRASEÑA
                         </label>
                         <input
+                            id="login-password"
                             type="password" value={password}
                             onChange={e => setPassword(e.target.value)}
                             placeholder="••••••••"
+                            autoComplete="current-password"
                             required className="glass-input-login"
                         />
                     </div>

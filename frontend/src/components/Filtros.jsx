@@ -21,8 +21,10 @@ const Filtros = ({
             }}
         >
 
+            <label htmlFor="filtro-nombre" className="sr-only">Buscar equipo por nombre</label>
             <input
-                type="text"
+                id="filtro-nombre"
+                type="search"
                 placeholder="Buscar equipo..."
                 value={filtroNombre}
                 onChange={(e) =>
@@ -38,7 +40,9 @@ const Filtros = ({
                 }}
             />
 
+            <label htmlFor="filtro-categoria" className="sr-only">Filtrar por categoría</label>
             <select
+                id="filtro-categoria"
                 value={filtroCategoria}
                 onChange={(e) =>
                     setFiltroCategoria(e.target.value)

@@ -218,7 +218,7 @@ const DetalleSolicitud = () => {
                 </div>
 
                 {error && (
-                    <div style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13, marginBottom:20 }}>
+                    <div role="alert" style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13, marginBottom:20 }}>
                         ⚠️ {error}
                     </div>
                 )}
@@ -254,16 +254,16 @@ const DetalleSolicitud = () => {
                     {editando ? (
                         <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
                             <div>
-                                <label className="ds-label">Fecha de retiro</label>
-                                <input type="date" value={fechaRetiro} min={hoyLocal()} onChange={e => setFechaRetiro(e.target.value)} className="ds-input" />
+                                <label htmlFor="editar-retiro" className="ds-label">Fecha de retiro</label>
+                                <input id="editar-retiro" type="date" value={fechaRetiro} min={hoyLocal()} onChange={e => setFechaRetiro(e.target.value)} className="ds-input" />
                             </div>
                             <div>
-                                <label className="ds-label">Fecha de devolución</label>
-                                <input type="date" value={fechaDevolucion} min={fechaRetiro || hoyLocal()} onChange={e => setFechaDevolucion(e.target.value)} className="ds-input" />
+                                <label htmlFor="editar-devolucion" className="ds-label">Fecha de devolución</label>
+                                <input id="editar-devolucion" type="date" value={fechaDevolucion} min={fechaRetiro || hoyLocal()} onChange={e => setFechaDevolucion(e.target.value)} className="ds-input" />
                             </div>
                             <div>
-                                <label className="ds-label">Motivo</label>
-                                <textarea value={motivo} onChange={e => setMotivo(e.target.value)} rows={3} className="ds-input" style={{ resize:'vertical' }} />
+                                <label htmlFor="editar-motivo" className="ds-label">Motivo</label>
+                                <textarea id="editar-motivo" value={motivo} onChange={e => setMotivo(e.target.value)} rows={3} className="ds-input" style={{ resize:'vertical' }} />
                             </div>
                             <div style={{ display:'flex', gap:10, marginTop:4 }}>
                                 <button onClick={handleGuardar} className="ds-btn-primary">Guardar cambios</button>
