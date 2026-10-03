@@ -85,7 +85,26 @@ describe("Pruebas del Módulo 1: Autenticación", () => {
             .toBe(400);
     });
 
-    it("7. Debe aceptar el token del login y rechazar uno firmado con otra clave", async () => {
+    it("6b. Debe exigir una contraseña de al menos 6 caracteres", async () => {
+        const registrar = (password) => request(app)
+            .post('/api/auth/register')
+            .send({
+                nombre: "Usuario",
+                email: `pw${password.length}_${Date.now()}@dds.com`,
+                password
+            });
+
+        const corta = await registrar("1234");
+
+        expect(corta.statusCode).toBe(400);
+        expect(corta.body.error).toBe("La contraseña debe tener al menos 6 caracteres.");
+
+        const valida = await registrar("123456");
+
+        expect(valida.statusCode).toBe(201);
+    });
+
+    it("7.Debe aceptar el token del login y rechazar uno firmado con otra clave", async () => {
         const jwt = require('jsonwebtoken');
 
         const login = await request(app)
