@@ -114,17 +114,40 @@ const actualizarEquipo = async (id, datos) => {
     );
 
     if (!equipo) {
-        throw new Error('Equipo no encontrado');
+        const error = new Error('Equipo no encontrado');
+        error.statusCode = 404;
+        throw error;
     }
+
+    // Actualización parcial: los campos que no se envían conservan su valor
+    const campos = [
+        'codigoInventario',
+        'nombre',
+        'categoria',
+        'estado',
+        'ubicacion',
+        'requiereAutorizacion'
+    ];
+
+    const combinado = { ...equipo };
+
+    for (const campo of campos) {
+        if (datos[campo] !== undefined) {
+            combinado[campo] = datos[campo];
+        }
+    }
+
+    Equipo.validar(combinado);
 
     const {
         codigoInventario,
         nombre,
         categoria,
         estado,
-        ubicacion,
-        requiereAutorizacion
-    } = datos;
+        ubicacion
+    } = combinado;
+
+    const requiereAutorizacion = Boolean(combinado.requiereAutorizacion);
 
     await db.run(
         `

@@ -171,4 +171,47 @@ describe('Equipos - alta, edición y baja (admin)', () => {
         expect(response.statusCode).toBe(201);
         expect(response.body.estado).toBe('disponible');
     });
+
+    const actualizar = (id, datos) => request(app)
+        .put(`/api/equipos/${id}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(datos);
+
+    test('PUT parcial debe cambiar solo el estado y conservar el resto', async () => {
+        const creado = await crear(nuevoEquipo('PUT-001', {
+            nombre: 'Proyector Epson',
+            ubicacion: 'Aula 3',
+            requiereAutorizacion: true
+        }));
+
+        const response = await actualizar(creado.body.id, { estado: 'mantenimiento' });
+
+        expect(response.statusCode).toBe(200);
+
+        const guardado = await request(app).get(`/api/equipos/${creado.body.id}`);
+
+        expect(guardado.body).toMatchObject({
+            codigoInventario: 'PUT-001',
+            nombre: 'Proyector Epson',
+            categoria: 'Notebook',
+            ubicacion: 'Aula 3',
+            estado: 'mantenimiento',
+            requiereAutorizacion: 1
+        });
+    });
+
+    test('PUT con un estado inválido debe dar 400', async () => {
+        const creado = await crear(nuevoEquipo('PUT-002'));
+
+        const response = await actualizar(creado.body.id, { estado: 'roto' });
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/estado inválido/i);
+    });
+
+    test('PUT de un equipo inexistente debe dar 404', async () => {
+        const response = await actualizar('id-inexistente', { nombre: 'x' });
+
+        expect(response.statusCode).toBe(404);
+    });
 });
