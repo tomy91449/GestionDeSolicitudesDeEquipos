@@ -64,4 +64,26 @@ describe('Detalle de solicitud - botones', () => {
 
         expect(screen.queryByRole('button', { name: /editar solicitud/i })).toBeNull();
     });
+
+    const usuarioDueno = { id: 'u1', nombre: 'Ana', rol: 'usuario' };
+
+    test('el dueño puede cancelar una aprobada antes de la fecha de retiro', async () => {
+        await abrirDetalle(usuarioDueno, { estado: 'aprobada', fechaRetiro: '2031-01-10' });
+
+        expect(botonesCancelar()).toHaveLength(1);
+        // Una aprobada ya no se puede editar
+        expect(screen.queryByRole('button', { name: /editar/i })).toBeNull();
+    });
+
+    test('el dueño no ve "Cancelar" si ya llegó la fecha de retiro', async () => {
+        await abrirDetalle(usuarioDueno, { estado: 'aprobada', fechaRetiro: '2020-01-10', fechaDevolucion: '2020-01-12' });
+
+        expect(botonesCancelar()).toHaveLength(0);
+    });
+
+    test('el dueño no ve "Cancelar" en una rechazada', async () => {
+        await abrirDetalle(usuarioDueno, { estado: 'rechazada' });
+
+        expect(botonesCancelar()).toHaveLength(0);
+    });
 });
