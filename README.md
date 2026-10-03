@@ -12,7 +12,7 @@ Aplicación web Full-Stack para gestionar un catálogo de equipos (notebooks, pr
 | Capa          | Stack                                                                        |
 |---------------|------------------------------------------------------------------------------|
 | Frontend      | React 18 + Vite, `react-router-dom` v6, Context API (`AuthContext`), Axios     |
-| Backend       | Node.js + Express, JWT (`jsonwebtoken`), `bcryptjs`, `uuid`, `dayjs`          |
+| Backend       | Node.js + Express, JWT (`jsonwebtoken`), `bcryptjs`, `uuid`, `dotenv`         |
 | Base de datos | SQLite (`sqlite` + `sqlite3`), archivo local `backend/database.sqlite`        |
 | Tests         | Jest + Supertest                                                             |
 
@@ -185,4 +185,3 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 ## Problemas conocidos
 
 - **Los tests de solicitudes son permisivos:** por ejemplo, "Solicitud válida" también pasa si la API responde `400`, así que no alcanzan para detectar regresiones.
-- **Dependencias sin uso:** `bcrypt`, `pg`, `pg-hstore` y `sequelize`.
