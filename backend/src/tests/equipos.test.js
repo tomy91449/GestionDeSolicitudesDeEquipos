@@ -218,6 +218,20 @@ describe('Equipos - alta, edición y baja (admin)', () => {
         expect(response.body.error).toMatch(/estado inválido/i);
     });
 
+    test('PUT con el código de otro equipo debe dar 400 con mensaje claro', async () => {
+        await crear(nuevoEquipo('PUT-003'));
+        const otro = await crear(nuevoEquipo('PUT-004'));
+
+        const response = await actualizar(otro.body.id, { codigoInventario: 'PUT-003' });
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/ya existe un equipo con ese código/i);
+
+        // Mantener su propio código no cuenta como duplicado
+        const mismoCodigo = await actualizar(otro.body.id, { codigoInventario: 'PUT-004', nombre: 'Renombrado' });
+        expect(mismoCodigo.statusCode).toBe(200);
+    });
+
     test('PUT de un equipo inexistente debe dar 404', async () => {
         const response = await actualizar('id-inexistente', { nombre: 'x' });
 

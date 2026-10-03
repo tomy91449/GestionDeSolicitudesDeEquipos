@@ -139,6 +139,22 @@ const actualizarEquipo = async (id, datos) => {
 
     Equipo.validar(combinado);
 
+    // Mismo control que al crear: el código no puede usarlo otro equipo
+    const duplicado = await db.get(
+        `
+        SELECT id
+        FROM equipos
+        WHERE codigoInventario = ? AND id <> ?
+        `,
+        [combinado.codigoInventario, id]
+    );
+
+    if (duplicado) {
+        throw new Error(
+            'Ya existe un equipo con ese código de inventario'
+        );
+    }
+
     const {
         codigoInventario,
         nombre,
