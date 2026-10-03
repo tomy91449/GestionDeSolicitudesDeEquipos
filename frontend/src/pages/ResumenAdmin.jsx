@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listarSolicitudes } from '../services/solicitudes.service';
-import { ArrowCounterClockwise, ChartBar, CheckCircle, HourglassMedium, XCircle } from '@phosphor-icons/react';
+import { ArrowCounterClockwiseIcon, ChartBarIcon, CheckCircleIcon, HourglassMediumIcon, XCircleIcon } from '@phosphor-icons/react';
 
 const STYLES = `
     @keyframes slideUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -34,11 +34,11 @@ const STYLES = `
 `;
 
 const tarjetaConfig = [
-    { key:'total',     label:'Total',      Icono:ChartBar, accent:'#818cf8', glow:'rgba(129,140,248,.2)', cls:'ra-card-total'     },
-    { key:'pendientes',label:'Pendientes', Icono:HourglassMedium, accent:'#fbbf24', glow:'rgba(251,191,36,.2)',  cls:'ra-card-pendiente' },
-    { key:'aprobadas', label:'Aprobadas',  Icono:CheckCircle, accent:'#34d399', glow:'rgba(52,211,153,.2)',  cls:'ra-card-aprobada'  },
-    { key:'rechazadas',label:'Rechazadas', Icono:XCircle, accent:'#f87171', glow:'rgba(248,113,113,.2)', cls:'ra-card-rechazada' },
-    { key:'devueltas', label:'Devueltas',  Icono:ArrowCounterClockwise, accent:'#60a5fa', glow:'rgba(96,165,250,.2)',  cls:'ra-card-devuelta'  },
+    { key:'total',     label:'Total',      Icono:ChartBarIcon, accent:'#818cf8', glow:'rgba(129,140,248,.2)', cls:'ra-card-total'     },
+    { key:'pendientes',label:'Pendientes', Icono:HourglassMediumIcon, accent:'#fbbf24', glow:'rgba(251,191,36,.2)',  cls:'ra-card-pendiente' },
+    { key:'aprobadas', label:'Aprobadas',  Icono:CheckCircleIcon, accent:'#34d399', glow:'rgba(52,211,153,.2)',  cls:'ra-card-aprobada'  },
+    { key:'rechazadas',label:'Rechazadas', Icono:XCircleIcon, accent:'#f87171', glow:'rgba(248,113,113,.2)', cls:'ra-card-rechazada' },
+    { key:'devueltas', label:'Devueltas',  Icono:ArrowCounterClockwiseIcon, accent:'#60a5fa', glow:'rgba(96,165,250,.2)',  cls:'ra-card-devuelta'  },
 ];
 
 const ResumenAdmin = () => {

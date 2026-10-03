@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Package, SignOut } from '@phosphor-icons/react';
+import { PackageIcon, SignOutIcon } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
 import './Navbar.css';
 
@@ -42,7 +42,7 @@ const Navbar = () => {
         <nav className="nav-barra" aria-label="Principal">
             <Link to="/equipos" className="nav-marca">
                 <span className="nav-marca-icono" aria-hidden="true">
-                    <Package size={18} weight="bold" color="#fff" />
+                    <PackageIcon size={18} weight="bold" color="#fff" />
                 </span>
                 Control de Equipamiento
             </Link>
@@ -64,7 +64,7 @@ const Navbar = () => {
             <div className="nav-usuario">
                 {user?.nombre && <span className="nav-nombre">{user.nombre}</span>}
                 <button type="button" onClick={handleLogout} className="nav-salir">
-                    <SignOut size={16} weight="bold" aria-hidden="true" />
+                    <SignOutIcon size={16} weight="bold" aria-hidden="true" />
                     Cerrar sesión
                 </button>
             </div>

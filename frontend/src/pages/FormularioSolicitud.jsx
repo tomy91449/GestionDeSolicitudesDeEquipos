@@ -3,7 +3,7 @@ import { crearSolicitud } from '../services/solicitudes.service';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { hoyLocal } from '../utils/fechas';
-import { ClipboardText, ShieldCheck, Warning } from '@phosphor-icons/react';
+import { ClipboardTextIcon, ShieldCheckIcon, WarningIcon } from '@phosphor-icons/react';
 
 const STYLES = `
     @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
@@ -128,7 +128,7 @@ const FormularioSolicitud = () => {
                 {/* Ícono + título */}
                 <div style={{ textAlign:'center', marginBottom:28 }}>
                     <div style={{ width:52, height:52, borderRadius:14, background:'linear-gradient(135deg,#4f6eff,#7c3aed)', display:'inline-flex', alignItems:'center', justifyContent:'center', marginBottom:14, boxShadow:'0 8px 24px rgba(79,110,255,.4)', fontSize:22 }}>
-                        <ClipboardText size={24} weight="bold" color="#fff" aria-hidden="true" />
+                        <ClipboardTextIcon size={24} weight="bold" color="#fff" aria-hidden="true" />
                     </div>
                     <p style={{ color:'#fff', fontSize:19, fontWeight:700, margin:'0 0 4px', letterSpacing:'-.3px' }}>Nueva solicitud</p>
                     <p style={{ color:'rgba(255,255,255,.35)', fontSize:13, margin:0 }}>Completá los datos del pedido</p>
@@ -175,7 +175,7 @@ const FormularioSolicitud = () => {
                     {/* Error */}
                     {error && (
                         <div role="alert" style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13 }}>
-                            <Warning size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
+                            <WarningIcon size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
                         </div>
                     )}
 
@@ -186,7 +186,7 @@ const FormularioSolicitud = () => {
 
                 {/* Badge */}
                 <div style={{ textAlign:'center', marginTop:20, fontSize:11, color:'rgba(255,255,255,.18)', borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:14 }}>
-                    <ShieldCheck size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
+                    <ShieldCheckIcon size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
                 </div>
             </div>
         </div>

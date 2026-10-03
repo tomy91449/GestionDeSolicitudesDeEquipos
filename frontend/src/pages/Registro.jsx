@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
-import { CheckCircle, ShieldCheck, UserPlus, Warning } from '@phosphor-icons/react';
+import { CheckCircleIcon, ShieldCheckIcon, UserPlusIcon, WarningIcon } from '@phosphor-icons/react';
 
 const Registro = () => {
     const [nombre, setNombre] = useState('');
@@ -186,7 +186,7 @@ const Registro = () => {
                     margin:'0 auto 20px',
                     boxShadow:'0 8px 24px rgba(79,110,255,.4)',
                     fontSize:'24px'
-                }}><UserPlus size={26} weight="bold" color="#fff" aria-hidden="true" /></div>
+                }}><UserPlusIcon size={26} weight="bold" color="#fff" aria-hidden="true" /></div>
 
                 <p style={{ color:'#fff', fontSize:'20px', fontWeight:'700', textAlign:'center', margin:'0 0 4px', letterSpacing:'-.3px' }}>
                     Crear cuenta
@@ -201,7 +201,7 @@ const Registro = () => {
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#fca5a5', fontSize:'13px', marginBottom:'16px'
                     }}>
-                        <Warning size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
+                        <WarningIcon size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
                     </div>
                 )}
 
@@ -211,7 +211,7 @@ const Registro = () => {
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#6ee7b7', fontSize:'13px', marginBottom:'16px'
                     }}>
-                        <CheckCircle size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{mensaje}
+                        <CheckCircleIcon size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{mensaje}
                     </div>
                 )}
 
@@ -286,7 +286,7 @@ const Registro = () => {
                     fontSize:'11px', color:'rgba(255,255,255,.2)',
                     borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:'16px'
                 }}>
-                    <ShieldCheck size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
+                    <ShieldCheckIcon size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
                 </div>
             </div>
         </div>
