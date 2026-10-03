@@ -56,6 +56,12 @@ const validarDatos = ({ fechaRetiro, fechaDevolucion, motivo }) => {
         throw httpError('La fecha de devolución no puede ser anterior a la de retiro', 400);
 };
 
+// No se puede reservar hacia atrás: el retiro tiene que ser hoy o después
+const validarRetiroNoPasado = (fechaRetiro) => {
+    if (fechaRetiro < hoy())
+        throw httpError('La fecha de retiro no puede ser anterior a hoy', 400);
+};
+
 const validarDisponibilidad = async (equipoId, fechaRetiro, fechaDevolucion, excluirId) => {
 
     const ocupado = await Solicitud.haySuperposicion(
@@ -98,6 +104,7 @@ const crearSolicitud = async (
         throw httpError('El equipo es obligatorio', 400);
 
     validarDatos({ fechaRetiro, fechaDevolucion, motivo });
+    validarRetiroNoPasado(fechaRetiro);
 
     const equipo = await Equipo.findById(equipoId);
 
@@ -161,6 +168,11 @@ const editarSolicitud = async (id, datos, usuario) => {
     };
 
     validarDatos(nuevos);
+
+    // Solo si se cambia la fecha: editar el motivo de una solicitud cuyo
+    // retiro ya llegó no debe fallar por la fecha que ya tenía
+    if (nuevos.fechaRetiro !== solicitud.fechaRetiro)
+        validarRetiroNoPasado(nuevos.fechaRetiro);
 
     await validarDisponibilidad(
         solicitud.equipoId,

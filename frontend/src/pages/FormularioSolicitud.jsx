@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { crearSolicitud } from '../services/solicitudes.service';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { hoyLocal } from '../utils/fechas';
 
 const STYLES = `
     @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
@@ -151,11 +152,11 @@ const FormularioSolicitud = () => {
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
                         <div>
                             <label className="fs-label">Fecha de retiro</label>
-                            <input type="date" name="fechaRetiro" value={form.fechaRetiro} onChange={handleChange} required className="fs-input" />
+                            <input type="date" name="fechaRetiro" value={form.fechaRetiro} min={hoyLocal()} onChange={handleChange} required className="fs-input" />
                         </div>
                         <div>
                             <label className="fs-label">Fecha de devolución</label>
-                            <input type="date" name="fechaDevolucion" value={form.fechaDevolucion} onChange={handleChange} required className="fs-input" />
+                            <input type="date" name="fechaDevolucion" value={form.fechaDevolucion} min={form.fechaRetiro || hoyLocal()} onChange={handleChange} required className="fs-input" />
                         </div>
                     </div>
 

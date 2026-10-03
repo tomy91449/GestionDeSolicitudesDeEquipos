@@ -3,6 +3,7 @@ const app = require('../app'); // Con un solo punto de retroceso
 const { initDB } = require('../database/db');
 const Equipo = require('../models/Equipo');
 const Usuario = require('../models/Usuario');
+const { fecha } = require('./fechas');
 
 describe('Pruebas Módulo 2 - Equipos', () => {
 
@@ -250,8 +251,8 @@ describe('Equipos - alta, edición y baja (admin)', () => {
             .set('Authorization', `Bearer ${adminToken}`)
             .send({
                 equipoId: creado.body.id,
-                fechaRetiro: '2030-01-10',
-                fechaDevolucion: '2030-01-12',
+                fechaRetiro: fecha(10),
+                fechaDevolucion: fecha(12),
                 motivo: 'Reserva que bloquea el borrado'
             });
 
