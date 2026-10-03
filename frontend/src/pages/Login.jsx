@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 
@@ -9,6 +9,10 @@ const Login = () => {
     const [error, setError] = useState(null);
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    // api.js redirige acá con ?sesion=vencida cuando el token deja de servir
+    const [searchParams] = useSearchParams();
+    const sesionVencida = searchParams.get('sesion') === 'vencida';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -173,6 +177,16 @@ const Login = () => {
                 <p style={{ color:'rgba(255,255,255,.4)', fontSize:'13px', textAlign:'center', margin:'0 0 28px' }}>
                     Sistema de control de equipamiento
                 </p>
+
+                {sesionVencida && !error && (
+                    <div role="status" style={{
+                        background:'rgba(245,158,11,.15)', border:'1px solid rgba(245,158,11,.3)',
+                        borderRadius:'10px', padding:'10px 14px',
+                        color:'#fcd34d', fontSize:'13px', marginBottom:'16px'
+                    }}>
+                        Tu sesión venció. Iniciá sesión de nuevo.
+                    </div>
+                )}
 
                 {error && (
                     <div style={{

@@ -11,6 +11,13 @@ import {
 
 import AccionesSolicitud from '../components/AccionesSolicitud';
 
+// Fecha local de hoy en formato AAAA-MM-DD (toISOString usaría UTC)
+const hoyLocal = () => {
+    const d = new Date();
+    const dosDigitos = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${dosDigitos(d.getMonth() + 1)}-${dosDigitos(d.getDate())}`;
+};
+
 const STYLES = `
     @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
     @keyframes pulse  { 0%,100%{opacity:.4} 50%{opacity:.9} }
@@ -171,6 +178,14 @@ const DetalleSolicitud = () => {
 
     const esPropietario = user?.id === solicitud.usuarioId;
     const esAdminOEncargado = ['admin', 'encargado'].includes(user?.rol);
+
+    // Misma regla que el backend: las pendientes se pueden editar y
+    // cancelar; las aprobadas, solo cancelar antes de la fecha de retiro.
+    const puedeEditar = esPropietario && solicitud.estado === 'pendiente';
+    const puedeCancelar = esPropietario && (
+        solicitud.estado === 'pendiente' ||
+        (solicitud.estado === 'aprobada' && solicitud.fechaRetiro > hoyLocal())
+    );
     const cfg = estadoConfig[solicitud.estado] || estadoConfig.pendiente;
 
     return (
@@ -279,10 +294,14 @@ const DetalleSolicitud = () => {
                     )}
 
                     {/* Acciones propietario */}
-                    {esPropietario && solicitud.estado === 'pendiente' && !editando && (
+                    {(puedeEditar || puedeCancelar) && !editando && (
                         <div style={{ marginTop:28, display:'flex', gap:10, paddingTop:20, borderTop:'1px solid rgba(255,255,255,.07)' }}>
-                            <button onClick={() => setEditando(true)} className="ds-btn-outline-blue">✏️ Editar</button>
-                            <button onClick={handleCancelar} className="ds-btn-outline-red">✕ Cancelar solicitud</button>
+                            {puedeEditar && (
+                                <button onClick={() => setEditando(true)} className="ds-btn-outline-blue">✏️ Editar</button>
+                            )}
+                            {puedeCancelar && (
+                                <button onClick={handleCancelar} className="ds-btn-outline-red">✕ Cancelar solicitud</button>
+                            )}
                         </div>
                     )}
 

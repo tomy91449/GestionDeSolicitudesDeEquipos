@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-const SECRET_KEY = "clave_secreta_utn_dds";
+const { JWT_SECRET } = require('../config/env');
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -16,7 +15,7 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, JWT_SECRET);
         req.usuario = decoded;
         next();
     } catch (err) {

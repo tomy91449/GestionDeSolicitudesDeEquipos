@@ -22,6 +22,9 @@ router.get(
 /* ================= DETALLE ================= */
 router.get('/:id', verifyToken, solicitudesController.obtenerSolicitudPorId);
 
+/* ================= EDITAR ================= */
+router.put('/:id', verifyToken, solicitudesController.editarSolicitud);
+
 /* ================= HISTORIAL ================= */
 router.get('/:id/historial', verifyToken, solicitudesController.obtenerHistorial);
 

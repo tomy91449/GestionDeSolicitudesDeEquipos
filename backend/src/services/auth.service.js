@@ -1,20 +1,20 @@
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
+const { JWT_SECRET } = require('../config/env');
 
-const SECRET_KEY = "clave_secreta_utn_dds";
-
+// Registro público: siempre crea un usuario común. Los roles admin y
+// encargado se crean desde el seeder, nunca desde la API.
 const registrarUsuario = async (
     nombre,
     email,
-    password,
-    rol = 'usuario'
+    password
 ) => {
 
     const usuario = await Usuario.crear({
         nombre,
         email,
         password,
-        rol
+        rol: 'usuario'
     });
 
     return usuario.toPublic();
@@ -46,7 +46,7 @@ const loginUsuario = async (
             nombre: usuario.nombre,
             rol: usuario.rol
         },
-        SECRET_KEY,
+        JWT_SECRET,
         {
             expiresIn: '2h'
         }

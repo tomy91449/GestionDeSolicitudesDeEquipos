@@ -1,7 +1,32 @@
-const { connectDB } = require('../database/db');
+const { connectDB, initDB, closeDB } = require('../database/db');
 const { v4: uuidv4 } = require('uuid');
+const Usuario = require('../models/Usuario');
+
+// Usuarios de prueba para desarrollo. Son la única forma de tener un admin
+// o un encargado, porque el registro público siempre crea usuarios comunes.
+const USUARIOS = [
+    { nombre: 'Administrador', email: 'admin@dd.com', password: 'admin123', rol: 'admin' },
+    { nombre: 'Encargado', email: 'encargado@dd.com', password: 'encargado123', rol: 'encargado' },
+    { nombre: 'Usuario', email: 'usuario@dd.com', password: 'usuario123', rol: 'usuario' }
+];
+
+async function seedUsuarios() {
+
+    for (const datos of USUARIOS) {
+
+        const existe = await Usuario.findByEmail(datos.email);
+
+        if (!existe) {
+            await Usuario.crear(datos);
+            console.log(`Usuario agregado: ${datos.email} (${datos.rol})`);
+        }
+    }
+}
 
 async function seedEquipos() {
+
+    // Crea las tablas si todavía no existen (base nueva)
+    await initDB();
 
     const db = await connectDB();
 
@@ -116,12 +141,17 @@ async function seedEquipos() {
         }
     }
 
-    console.log('Seeder ejecutado correctamente');
 }
 
 seedEquipos()
-    .then(() => process.exit())
-    .catch((error) => {
+    .then(seedUsuarios)
+    .then(async () => {
+        console.log('Seeder ejecutado correctamente');
+        await closeDB();
+        process.exit();
+    })
+    .catch(async (error) => {
         console.error(error);
+        await closeDB().catch(() => {});
         process.exit(1);
     });

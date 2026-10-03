@@ -1,12 +1,44 @@
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 const { open } = require('sqlite');
 
-// Función para abrir la conexión a la base de datos
-async function connectDB() {
-    return open({
-        filename: './database.sqlite', // Este es el archivo físico que se creará
-        driver: sqlite3.Database
-    });
+// Ruta absoluta para que el servidor y el seeder usen siempre el mismo
+// archivo (backend/database.sqlite), sin importar desde qué carpeta se
+// ejecuten. Se puede cambiar con la variable DB_PATH; con ":memory:" la
+// base vive en memoria (la usan los tests).
+const resolverRuta = (ruta) => {
+    if (!ruta) return path.join(__dirname, '..', '..', 'database.sqlite');
+    if (ruta === ':memory:') return ruta;
+    return path.resolve(ruta);
+};
+
+const DB_PATH = resolverRuta(process.env.DB_PATH);
+
+// Conexión única compartida por toda la app. Se guarda la promesa para
+// que llamadas simultáneas mientras se abre esperen la misma conexión.
+let conexion = null;
+
+// Devuelve la conexión compartida (la abre la primera vez)
+function connectDB() {
+    if (!conexion) {
+        conexion = open({
+            filename: DB_PATH,
+            driver: sqlite3.Database
+        }).catch((error) => {
+            // Si falló al abrir, el próximo llamado vuelve a intentar
+            conexion = null;
+            throw error;
+        });
+    }
+    return conexion;
+}
+
+// Cierra la conexión compartida (al apagar el servidor o al terminar un script)
+async function closeDB() {
+    if (!conexion) return;
+    const db = await conexion;
+    conexion = null;
+    await db.close();
 }
 
 // Función para inicializar las tablas
@@ -65,4 +97,4 @@ async function initDB() {
 
 }
 
-module.exports = { connectDB, initDB };
+module.exports = { connectDB, initDB, closeDB };

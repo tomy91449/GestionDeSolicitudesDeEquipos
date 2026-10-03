@@ -1,5 +1,6 @@
 const { connectDB } = require('../database/db');
 const { v4: uuidv4 } = require('uuid');
+const Equipo = require('../models/Equipo');
 
 const obtenerEquipos = async () => {
     const db = await connectDB();
@@ -25,6 +26,15 @@ const obtenerEquipoPorId = async (id) => {
 };
 
 const crearEquipo = async (datos) => {
+
+    // Campos obligatorios y estado dentro de los permitidos
+    Equipo.validar(datos);
+
+    if (!datos.estado) {
+        throw new Error(
+            `El estado es obligatorio. Debe ser: ${Equipo.ESTADOS_VALIDOS.join(', ')}`
+        );
+    }
 
     const db = await connectDB();
 
@@ -104,7 +114,45 @@ const actualizarEquipo = async (id, datos) => {
     );
 
     if (!equipo) {
-        throw new Error('Equipo no encontrado');
+        const error = new Error('Equipo no encontrado');
+        error.statusCode = 404;
+        throw error;
+    }
+
+    // Actualización parcial: los campos que no se envían conservan su valor
+    const campos = [
+        'codigoInventario',
+        'nombre',
+        'categoria',
+        'estado',
+        'ubicacion',
+        'requiereAutorizacion'
+    ];
+
+    const combinado = { ...equipo };
+
+    for (const campo of campos) {
+        if (datos[campo] !== undefined) {
+            combinado[campo] = datos[campo];
+        }
+    }
+
+    Equipo.validar(combinado);
+
+    // Mismo control que al crear: el código no puede usarlo otro equipo
+    const duplicado = await db.get(
+        `
+        SELECT id
+        FROM equipos
+        WHERE codigoInventario = ? AND id <> ?
+        `,
+        [combinado.codigoInventario, id]
+    );
+
+    if (duplicado) {
+        throw new Error(
+            'Ya existe un equipo con ese código de inventario'
+        );
     }
 
     const {
@@ -112,9 +160,10 @@ const actualizarEquipo = async (id, datos) => {
         nombre,
         categoria,
         estado,
-        ubicacion,
-        requiereAutorizacion
-    } = datos;
+        ubicacion
+    } = combinado;
+
+    const requiereAutorizacion = Boolean(combinado.requiereAutorizacion);
 
     await db.run(
         `
@@ -164,7 +213,28 @@ const eliminarEquipo = async (id) => {
     );
 
     if (!equipo) {
-        throw new Error('Equipo no encontrado');
+        const error = new Error('Equipo no encontrado');
+        error.statusCode = 404;
+        throw error;
+    }
+
+    // No se borra si tiene solicitudes (de cualquier estado): quedarían
+    // apuntando a un equipo inexistente y se perdería su historial
+    const { total } = await db.get(
+        `
+        SELECT COUNT(*) AS total
+        FROM solicitudes
+        WHERE equipoId = ?
+        `,
+        [id]
+    );
+
+    if (total > 0) {
+        const error = new Error(
+            `No se puede eliminar el equipo porque tiene ${total} solicitud(es) asociada(s)`
+        );
+        error.statusCode = 409;
+        throw error;
     }
 
     await db.run(

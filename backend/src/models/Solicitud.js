@@ -1,122 +1,192 @@
-// src/services/solicitudes.service.js
-const Solicitud = require('../models/Solicitud');
 const { connectDB } = require('../database/db');
+const { v4: uuidv4 } = require('uuid');
 
-/**
- * Crea una nueva solicitud de equipo
- */
-const crearSolicitud = async (equipoId, usuarioId, fechaRetiro, fechaDevolucion, motivo) => {
-    // Usamos el método estático creador que ya tenés en tu modelo
-    return await Solicitud.crear({
+const ESTADOS = [
+    'pendiente',
+    'aprobada',
+    'rechazada',
+    'cancelada',
+    'devuelta'
+];
+
+// Estados que ocupan el equipo durante su rango de fechas
+const ESTADOS_ACTIVOS = ['pendiente', 'aprobada'];
+
+// Trae la solicitud con el nombre del equipo y del usuario (lo usa el frontend)
+const SELECT_CON_NOMBRES = `
+    SELECT
+        s.*,
+        e.nombre AS equipoNombre,
+        e.categoria AS equipoCategoria,
+        u.nombre AS usuarioNombre
+    FROM solicitudes s
+    LEFT JOIN equipos e ON e.id = s.equipoId
+    LEFT JOIN usuarios u ON u.id = s.usuarioId
+`;
+
+class Solicitud {
+
+    static async findAll({ usuarioId } = {}) {
+
+        const db = await connectDB();
+
+        if (usuarioId) {
+            return db.all(
+                `${SELECT_CON_NOMBRES}
+                WHERE s.usuarioId = ?
+                ORDER BY s.fechaRetiro DESC`,
+                [usuarioId]
+            );
+        }
+
+        return db.all(`
+            ${SELECT_CON_NOMBRES}
+            ORDER BY s.fechaRetiro DESC
+        `);
+    }
+
+    static async findById(id) {
+
+        const db = await connectDB();
+
+        return db.get(
+            `${SELECT_CON_NOMBRES}
+            WHERE s.id = ?`,
+            [id]
+        );
+    }
+
+    /**
+     * Devuelve true si el equipo tiene otra solicitud activa
+     * cuyas fechas se pisan con el rango indicado.
+     */
+    static async haySuperposicion(
+        equipoId,
+        fechaRetiro,
+        fechaDevolucion,
+        excluirId = null
+    ) {
+
+        const db = await connectDB();
+
+        const fila = await db.get(
+            `
+            SELECT id
+            FROM solicitudes
+            WHERE equipoId = ?
+            AND estado IN (${ESTADOS_ACTIVOS.map(() => '?').join(', ')})
+            AND fechaRetiro <= ?
+            AND fechaDevolucion >= ?
+            AND id IS NOT ?
+            LIMIT 1
+            `,
+            [
+                equipoId,
+                ...ESTADOS_ACTIVOS,
+                fechaDevolucion,
+                fechaRetiro,
+                excluirId
+            ]
+        );
+
+        return Boolean(fila);
+    }
+
+    static async create({
         equipoId,
         usuarioId,
         fechaRetiro,
         fechaDevolucion,
         motivo
-    });
-};
+    }) {
 
-/**
- * Obtiene una solicitud específica por su ID
- */
-const obtenerSolicitudPorId = async (id) => {
-    const solicitud = await Solicitud.findById(id);
-    if (!solicitud) {
-        throw new Error('Solicitud no encontrada');
-    }
-    return solicitud;
-};
+        const db = await connectDB();
 
-/**
- * Lista todas las solicitudes del sistema aplicando ordenamiento por fechaRetiro
- */
-const listarSolicitudes = async (query = {}) => {
-    // Usamos el método findAll de tu modelo que ya ordena por fechaRetiro DESC
-    return await Solicitud.findAll();
-};
+        const id = uuidv4();
 
-/**
- * Obtiene el historial de cambios de una solicitud (Trazabilidad)
- */
-const obtenerHistorial = async (solicitudId) => {
-    const db = await connectDB();
-    return await db.all(
-        `SELECT * FROM historial_solicitudes WHERE solicitudId = ? ORDER BY fechaHora DESC`,
-        [solicitudId]
-    );
-};
+        await db.run(
+            `
+            INSERT INTO solicitudes
+            (
+                id,
+                equipoId,
+                usuarioId,
+                fechaRetiro,
+                fechaDevolucion,
+                motivo,
+                estado
+            )
+            VALUES (?, ?, ?, ?, ?, ?, 'pendiente')
+            `,
+            [id, equipoId, usuarioId, fechaRetiro, fechaDevolucion, motivo]
+        );
 
-/**
- * Modifica el estado de una solicitud (Aprobada, Rechazada, Devuelta) e impacta el historial
- */
-const cambiarEstado = async (id, nuevoEstado, adminId) => {
-    const solicitud = await Solicitud.findById(id);
-    if (!solicitud) {
-        throw new Error('Solicitud no encontrada');
+        return this.findById(id);
     }
 
-    const estadoAnterior = solicitud.estado;
-    
-    // Actualizamos usando el método de tu modelo
-    await solicitud.actualizarEstado(nuevoEstado.toLowerCase(), adminId);
+    static async update(id, { fechaRetiro, fechaDevolucion, motivo }) {
 
-    // Grabamos el movimiento en el historial para que la cátedra vea la trazabilidad
-    const db = await connectDB();
-    const { v4: uuidv4 } = require('uuid');
-    await db.run(
-        `INSERT INTO historial_solicitudes (id, solicitudId, usuarioId, accion, fechaHora, valorAnterior, valorNuevo)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-            uuidv4(),
-            id,
-            adminId,
-            `CAMBIO_ESTADO_${nuevoEstado.toUpperCase()}`,
-            new Date().toISOString(),
-            estadoAnterior,
-            nuevoEstado.toLowerCase()
-        ]
-    );
+        const db = await connectDB();
 
-    return solicitud;
-};
+        await db.run(
+            `
+            UPDATE solicitudes
+            SET fechaRetiro = ?,
+                fechaDevolucion = ?,
+                motivo = ?
+            WHERE id = ?
+            `,
+            [fechaRetiro, fechaDevolucion, motivo, id]
+        );
 
-/**
- * 🛠️ AQUÍ ESTABA EL ERROR CORREGIDO:
- * Genera las métricas del panel de administración usando fechaRetiro en lugar de 'fecha'
- */
-const obtenerResumenAdmin = async () => {
-    const db = await connectDB();
+        return this.findById(id);
+    }
 
-    // Corregido: Agrupamos por 'fechaRetiro' pero le ponemos el alias 'as fecha' 
-    // para que tu frontend reciba la propiedad exacta que necesita para renderizar
-    const solicitudesPorFecha = await db.all(`
-        SELECT fechaRetiro as fecha, COUNT(*) as total 
-        FROM solicitudes 
-        GROUP BY fechaRetiro
-        ORDER BY fechaRetiro ASC
-        LIMIT 7
-    `);
+    static async updateEstado(id, estado, autorizadoPor = null) {
 
-    const porEstado = await db.all(`
-        SELECT estado, COUNT(*) as total 
-        FROM solicitudes 
-        GROUP BY estado
-    `);
+        const db = await connectDB();
 
-    const totalEquipos = await db.get('SELECT COUNT(*) as total FROM equipos');
+        await db.run(
+            `
+            UPDATE solicitudes
+            SET estado = ?,
+                autorizadoPor = COALESCE(?, autorizadoPor)
+            WHERE id = ?
+            `,
+            [estado, autorizadoPor, id]
+        );
 
-    return {
-        solicitudesPorFecha,
-        porEstado,
-        totalEquipos: totalEquipos?.total || 0
-    };
-};
+        return this.findById(id);
+    }
 
-module.exports = {
-    crearSolicitud,
-    obtenerSolicitudPorId,
-    listarSolicitudes,
-    obtenerHistorial,
-    cambiarEstado,
-    obtenerResumenAdmin
-};
+    static async findHistorial(solicitudId) {
+
+        const db = await connectDB();
+
+        return db.all(
+            `
+            SELECT h.*, u.nombre AS usuarioNombre
+            FROM historial_solicitudes h
+            LEFT JOIN usuarios u ON u.id = h.usuarioId
+            WHERE h.solicitudId = ?
+            ORDER BY h.fechaHora DESC
+            `,
+            [solicitudId]
+        );
+    }
+
+    static async contarPorEstado() {
+
+        const db = await connectDB();
+
+        return db.all(`
+            SELECT estado, COUNT(*) AS total
+            FROM solicitudes
+            GROUP BY estado
+        `);
+    }
+}
+
+Solicitud.ESTADOS = ESTADOS;
+
+module.exports = Solicitud;

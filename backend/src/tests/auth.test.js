@@ -84,4 +84,79 @@ describe("Pruebas del Módulo 1: Autenticación", () => {
         expect(response.statusCode)
             .toBe(400);
     });
+
+    it("6b. Debe exigir una contraseña de al menos 6 caracteres", async () => {
+        const registrar = (password) => request(app)
+            .post('/api/auth/register')
+            .send({
+                nombre: "Usuario",
+                email: `pw${password.length}_${Date.now()}@dds.com`,
+                password
+            });
+
+        const corta = await registrar("1234");
+
+        expect(corta.statusCode).toBe(400);
+        expect(corta.body.error).toBe("La contraseña debe tener al menos 6 caracteres.");
+
+        const valida = await registrar("123456");
+
+        expect(valida.statusCode).toBe(201);
+    });
+
+    it("7.Debe aceptar el token del login y rechazar uno firmado con otra clave", async () => {
+        const jwt = require('jsonwebtoken');
+
+        const login = await request(app)
+            .post('/api/auth/login')
+            .send({ email: testUser.email, password: testUser.password });
+
+        const conTokenValido = await request(app)
+            .get('/api/solicitudes')
+            .set('Authorization', `Bearer ${login.body.token}`);
+
+        expect(conTokenValido.statusCode).toBe(200);
+
+        // Misma información, pero firmado con la clave que antes estaba hardcodeada
+        const tokenFalso = jwt.sign(
+            { id: login.body.usuario.id, nombre: 'x', rol: 'admin' },
+            'clave_secreta_utn_dds'
+        );
+
+        const conTokenFalso = await request(app)
+            .get('/api/solicitudes')
+            .set('Authorization', `Bearer ${tokenFalso}`);
+
+        expect(conTokenFalso.statusCode).toBe(401);
+    });
+
+    it("8. No debe permitir registrarse como admin desde el registro público", async () => {
+        const intruso = {
+            nombre: "Intruso",
+            email: `intruso_${Date.now()}@dds.com`,
+            password: "password123",
+            rol: "admin"
+        };
+
+        const registro = await request(app)
+            .post('/api/auth/register')
+            .send(intruso);
+
+        expect(registro.statusCode).toBe(201);
+        expect(registro.body.rol).toBe('usuario');
+
+        const login = await request(app)
+            .post('/api/auth/login')
+            .send({ email: intruso.email, password: intruso.password });
+
+        expect(login.body.usuario.rol).toBe('usuario');
+
+        // Y con ese token no puede usar rutas de admin
+        const crearEquipo = await request(app)
+            .post('/api/equipos')
+            .set('Authorization', `Bearer ${login.body.token}`)
+            .send({ codigoInventario: 'HACK-1', nombre: 'x', categoria: 'x', estado: 'disponible', ubicacion: 'x' });
+
+        expect(crearEquipo.statusCode).toBe(403);
+    });
 });

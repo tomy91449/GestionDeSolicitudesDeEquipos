@@ -4,10 +4,11 @@ import { AuthContext } from '../context/AuthContext';
 import {
     aprobarSolicitud,
     rechazarSolicitud,
-    devolverSolicitud,
-    cancelarSolicitud
+    devolverSolicitud
 } from '../services/solicitudes.service';
 
+// Acciones de admin/encargado. Las del dueño (editar y cancelar) están
+// en DetalleSolicitud, para no mostrarlas dos veces.
 const AccionesSolicitud = ({ solicitud, onCambio }) => {
     const { user } = useContext(AuthContext);
     const [error, setError] = useState('');
@@ -17,20 +18,9 @@ const AccionesSolicitud = ({ solicitud, onCambio }) => {
     const esAdminOEncargado =
         ['admin', 'encargado'].includes(user?.rol);
 
-    const esPropietario =
-        user?.id === solicitud.usuarioId;
-
     /* =========================
        PERMISOS
     ========================== */
-
-    const puedeCancelar =
-        esPropietario &&
-        ['pendiente', 'aprobada'].includes(solicitud.estado);
-
-    const puedeEditar =
-        esPropietario &&
-        solicitud.estado === 'pendiente';
 
     const puedeAprobar =
         esAdminOEncargado &&
@@ -70,18 +60,6 @@ const AccionesSolicitud = ({ solicitud, onCambio }) => {
         }
     };
 
-    const handleCancelar = async () => {
-        try {
-            setError('');
-
-            await cancelarSolicitud(solicitud.id);
-
-            onCambio?.();
-        } catch (e) {
-            setError(e.response?.data?.error || 'Error al cancelar');
-        }
-    };
-
     /* =========================
        UI
     ========================== */
@@ -95,7 +73,6 @@ const AccionesSolicitud = ({ solicitud, onCambio }) => {
                 </p>
             )}
 
-            {/* ADMIN */}
             {puedeAprobar && (
                 <button onClick={() => handleCambioEstado('aprobada')}>
                     Aprobar
@@ -111,19 +88,6 @@ const AccionesSolicitud = ({ solicitud, onCambio }) => {
             {puedeMarcarDevuelta && (
                 <button onClick={() => handleCambioEstado('devuelta')}>
                     Marcar como devuelta
-                </button>
-            )}
-
-            {/* USUARIO */}
-            {puedeCancelar && (
-                <button onClick={handleCancelar}>
-                    Cancelar solicitud
-                </button>
-            )}
-
-            {puedeEditar && (
-                <button onClick={() => console.log('editar solicitud')}>
-                    Editar solicitud
                 </button>
             )}
 

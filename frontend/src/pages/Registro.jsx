@@ -23,8 +23,9 @@ const Registro = () => {
             setError('El email no es válido');
             return;
         }
-        if (password.length < 4) {
-            setError('La contraseña debe tener al menos 4 caracteres');
+        // Mismo mínimo y mensaje que el backend (models/Usuario.js)
+        if (password.length < 6) {
+            setError('La contraseña debe tener al menos 6 caracteres.');
             return;
         }
 

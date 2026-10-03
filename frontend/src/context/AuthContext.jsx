@@ -1,22 +1,26 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const AuthContext = createContext();
 
+// Se lee de forma síncrona en el estado inicial: si se hiciera en un
+// useEffect, ProtectedRoute vería user = null en el primer render y
+// mandaría al login al recargar la página (F5).
+const leerUsuarioGuardado = () => {
+    const storedUser = localStorage.getItem('user');
+
+    if (!storedUser) return null;
+
+    try {
+        return JSON.parse(storedUser);
+    } catch (e) {
+        localStorage.removeItem('user');
+        return null;
+    }
+};
+
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(leerUsuarioGuardado);
     const [token, setToken] = useState(localStorage.getItem('token'));
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (e) {
-                localStorage.removeItem('user');
-            }
-        }
-    }, []);
 
     const login = (tokenData, userData) => {
         localStorage.setItem('token', tokenData);
