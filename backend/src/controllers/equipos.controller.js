@@ -56,7 +56,7 @@ const eliminarEquipo = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(error.statusCode || 400).json({ error: error.message });
     }
 };
 

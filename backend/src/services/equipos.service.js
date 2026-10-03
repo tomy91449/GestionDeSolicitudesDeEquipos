@@ -200,6 +200,25 @@ const eliminarEquipo = async (id) => {
         throw new Error('Equipo no encontrado');
     }
 
+    // No se borra si tiene solicitudes (de cualquier estado): quedarían
+    // apuntando a un equipo inexistente y se perdería su historial
+    const { total } = await db.get(
+        `
+        SELECT COUNT(*) AS total
+        FROM solicitudes
+        WHERE equipoId = ?
+        `,
+        [id]
+    );
+
+    if (total > 0) {
+        const error = new Error(
+            `No se puede eliminar el equipo porque tiene ${total} solicitud(es) asociada(s)`
+        );
+        error.statusCode = 409;
+        throw error;
+    }
+
     await db.run(
         `
         DELETE FROM equipos

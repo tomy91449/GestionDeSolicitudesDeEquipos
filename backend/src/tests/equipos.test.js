@@ -214,4 +214,42 @@ describe('Equipos - alta, edición y baja (admin)', () => {
 
         expect(response.statusCode).toBe(404);
     });
+
+    const eliminar = (id) => request(app)
+        .delete(`/api/equipos/${id}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+
+    test('No debe borrar un equipo que tiene solicitudes (409)', async () => {
+        const creado = await crear(nuevoEquipo('DEL-001'));
+
+        await request(app)
+            .post('/api/solicitudes')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({
+                equipoId: creado.body.id,
+                fechaRetiro: '2030-01-10',
+                fechaDevolucion: '2030-01-12',
+                motivo: 'Reserva que bloquea el borrado'
+            });
+
+        const response = await eliminar(creado.body.id);
+
+        expect(response.statusCode).toBe(409);
+        expect(response.body.error).toMatch(/solicitud/i);
+
+        // El equipo sigue existiendo
+        const sigue = await request(app).get(`/api/equipos/${creado.body.id}`);
+        expect(sigue.statusCode).toBe(200);
+    });
+
+    test('Debe borrar un equipo sin solicitudes', async () => {
+        const creado = await crear(nuevoEquipo('DEL-002'));
+
+        const response = await eliminar(creado.body.id);
+
+        expect(response.statusCode).toBe(200);
+
+        const borrado = await request(app).get(`/api/equipos/${creado.body.id}`);
+        expect(borrado.statusCode).toBe(404);
+    });
 });
