@@ -74,10 +74,15 @@ El frontend apunta a `http://localhost:3000/api` ([frontend/src/services/api.js]
 
 ```bash
 cd backend
-npm test
+npm test        # Jest + Supertest: autenticación, equipos y solicitudes
 ```
 
-19 tests en 3 suites (autenticación, equipos y solicitudes).
+Los tests del backend usan una base en memoria, así que no tocan `database.sqlite`.
+
+```bash
+cd frontend
+npm test        # Vitest + Testing Library: componentes (sesión y rutas protegidas)
+```
 
 ### Usuarios de prueba
 
