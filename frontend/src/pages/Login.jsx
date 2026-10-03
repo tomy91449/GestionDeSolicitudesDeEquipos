@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
+import { LockKey, ShieldCheck, Warning } from '@phosphor-icons/react';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -169,7 +170,7 @@ const Login = () => {
                     margin:'0 auto 20px',
                     boxShadow:'0 8px 24px rgba(79,110,255,.4)',
                     fontSize:'24px'
-                }}>🔐</div>
+                }}><LockKey size={26} weight="bold" color="#fff" aria-hidden="true" /></div>
 
                 <p style={{ color:'#fff', fontSize:'20px', fontWeight:'700', textAlign:'center', margin:'0 0 4px', letterSpacing:'-.3px' }}>
                     Bienvenido<span className="cursor-blink" />
@@ -194,7 +195,7 @@ const Login = () => {
                         borderRadius:'10px', padding:'10px 14px',
                         color:'#fca5a5', fontSize:'13px', marginBottom:'16px'
                     }}>
-                        ⚠️ {error}
+                        <Warning size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
                     </div>
                 )}
 
@@ -245,7 +246,7 @@ const Login = () => {
                     fontSize:'11px', color:'rgba(255,255,255,.2)',
                     borderTop:'1px solid rgba(255,255,255,.06)', paddingTop:'16px'
                 }}>
-                    🛡 Conexión segura · JWT · Cifrado AES-256
+                    <ShieldCheck size={13} aria-hidden="true" className="icono" style={{ marginRight:4 }} />Sesión protegida con JWT · Contraseñas protegidas con bcrypt
                 </div>
             </div>
         </div>

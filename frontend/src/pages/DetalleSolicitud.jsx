@@ -11,6 +11,7 @@ import {
 
 import AccionesSolicitud from '../components/AccionesSolicitud';
 import { hoyLocal } from '../utils/fechas';
+import { PencilSimple, Warning, X } from '@phosphor-icons/react';
 
 const STYLES = `
     @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -164,7 +165,7 @@ const DetalleSolicitud = () => {
         <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
             background:'linear-gradient(135deg, #060818 0%, #0d1230 40%, #0a1628 70%, #050d1f 100%)',
             color:'#fca5a5', fontFamily:"'Segoe UI', sans-serif", fontSize:14 }}>
-            ⚠️ {error}
+            <Warning size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
         </div>
     );
 
@@ -219,7 +220,7 @@ const DetalleSolicitud = () => {
 
                 {error && (
                     <div role="alert" style={{ background:'rgba(220,38,38,.15)', border:'1px solid rgba(220,38,38,.3)', borderRadius:10, padding:'10px 14px', color:'#fca5a5', fontSize:13, marginBottom:20 }}>
-                        ⚠️ {error}
+                        <Warning size={16} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />{error}
                     </div>
                 )}
 
@@ -291,10 +292,10 @@ const DetalleSolicitud = () => {
                     {(puedeEditar || puedeCancelar) && !editando && (
                         <div style={{ marginTop:28, display:'flex', gap:10, paddingTop:20, borderTop:'1px solid rgba(255,255,255,.07)' }}>
                             {puedeEditar && (
-                                <button onClick={() => setEditando(true)} className="ds-btn-outline-blue">✏️ Editar</button>
+                                <button onClick={() => setEditando(true)} className="ds-btn-outline-blue"><PencilSimple size={15} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />Editar</button>
                             )}
                             {puedeCancelar && (
-                                <button onClick={handleCancelar} className="ds-btn-outline-red">✕ Cancelar solicitud</button>
+                                <button onClick={handleCancelar} className="ds-btn-outline-red"><X size={15} weight="bold" aria-hidden="true" className="icono" style={{ marginRight:6 }} />Cancelar solicitud</button>
                             )}
                         </div>
                     )}

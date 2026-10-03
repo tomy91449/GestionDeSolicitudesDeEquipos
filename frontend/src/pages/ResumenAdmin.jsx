@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { listarSolicitudes } from '../services/solicitudes.service';
+import { ArrowCounterClockwise, ChartBar, CheckCircle, HourglassMedium, XCircle } from '@phosphor-icons/react';
 
 const STYLES = `
     @keyframes slideUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -33,11 +34,11 @@ const STYLES = `
 `;
 
 const tarjetaConfig = [
-    { key:'total',     label:'Total',      emoji:'📊', accent:'#818cf8', glow:'rgba(129,140,248,.2)', cls:'ra-card-total'     },
-    { key:'pendientes',label:'Pendientes', emoji:'⏳', accent:'#fbbf24', glow:'rgba(251,191,36,.2)',  cls:'ra-card-pendiente' },
-    { key:'aprobadas', label:'Aprobadas',  emoji:'✅', accent:'#34d399', glow:'rgba(52,211,153,.2)',  cls:'ra-card-aprobada'  },
-    { key:'rechazadas',label:'Rechazadas', emoji:'❌', accent:'#f87171', glow:'rgba(248,113,113,.2)', cls:'ra-card-rechazada' },
-    { key:'devueltas', label:'Devueltas',  emoji:'🔄', accent:'#60a5fa', glow:'rgba(96,165,250,.2)',  cls:'ra-card-devuelta'  },
+    { key:'total',     label:'Total',      Icono:ChartBar, accent:'#818cf8', glow:'rgba(129,140,248,.2)', cls:'ra-card-total'     },
+    { key:'pendientes',label:'Pendientes', Icono:HourglassMedium, accent:'#fbbf24', glow:'rgba(251,191,36,.2)',  cls:'ra-card-pendiente' },
+    { key:'aprobadas', label:'Aprobadas',  Icono:CheckCircle, accent:'#34d399', glow:'rgba(52,211,153,.2)',  cls:'ra-card-aprobada'  },
+    { key:'rechazadas',label:'Rechazadas', Icono:XCircle, accent:'#f87171', glow:'rgba(248,113,113,.2)', cls:'ra-card-rechazada' },
+    { key:'devueltas', label:'Devueltas',  Icono:ArrowCounterClockwise, accent:'#60a5fa', glow:'rgba(96,165,250,.2)',  cls:'ra-card-devuelta'  },
 ];
 
 const ResumenAdmin = () => {
@@ -111,13 +112,13 @@ const ResumenAdmin = () => {
 
                 {/* Tarjetas */}
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:20, marginBottom:36 }}>
-                    {tarjetaConfig.map(({ key, label, emoji, accent, glow, cls }) => (
+                    {tarjetaConfig.map(({ key, label, Icono, accent, glow, cls }) => (
                         <div key={key} className={`ra-glass ${cls}`} style={{ padding:'28px 24px' }}>
                             {/* Glow de fondo */}
                             <div style={{ position:'absolute', bottom:0, left:0, right:0, height:'60%', background:`radial-gradient(ellipse at bottom, ${glow}, transparent)`, pointerEvents:'none' }} />
 
                             <div style={{ position:'relative', zIndex:1 }}>
-                                <div style={{ fontSize:28, marginBottom:12 }}>{emoji}</div>
+                                <div style={{ marginBottom:12 }}><Icono size={28} weight="duotone" color={accent} aria-hidden="true" /></div>
                                 <div style={{ color:'rgba(255,255,255,.4)', fontSize:10, letterSpacing:'1.5px', textTransform:'uppercase', marginBottom:8 }}>
                                     {label}
                                 </div>
