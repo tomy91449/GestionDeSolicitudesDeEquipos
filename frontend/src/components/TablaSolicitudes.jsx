@@ -1,99 +1,68 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-    aprobarSolicitud,
-    rechazarSolicitud,
-    devolverSolicitud
-} from '../services/solicitudes.service';
+import { CaretRightIcon } from '@phosphor-icons/react';
+import './Tabla.css';
+
+const ESTADOS = ['pendiente', 'aprobada', 'rechazada', 'devuelta', 'cancelada'];
+
+const claseEstado = (estado) => {
+    const valor = (estado || '').toLowerCase();
+    return ESTADOS.includes(valor) ? `estado estado-${valor}` : 'estado estado-cancelada';
+};
+
 const TablaSolicitudes = ({ solicitudes = [] }) => {
 
     if (!Array.isArray(solicitudes)) {
-        return <p>Error: datos inválidos</p>;
+        return <p role="alert" className="tabla-vacia">Error: datos inválidos</p>;
     }
 
     if (solicitudes.length === 0) {
-        return (
-            <p style={{ padding: '20px', color: '#666' }}>
-                No hay solicitudes registradas.
-            </p>
-        );
+        return <p className="tabla-vacia">No hay solicitudes registradas.</p>;
     }
 
-    const obtenerColorEstado = (estado) => {
-        switch ((estado || '').toLowerCase()) {
-            case 'pendiente':
-                return '#f57c00';
-            case 'aprobada':
-                return '#2e7d32';
-            case 'rechazada':
-                return '#d32f2f';
-            case 'devuelta':
-                return '#1976d2';
-            case 'cancelada':
-                return '#616161';
-            default:
-                return '#616161';
-        }
-    };
-
     return (
-        <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+        <div className="tabla-contenedor" role="region" aria-label="Tabla de solicitudes" tabIndex={0}>
+            <table className="tabla">
+                <caption className="sr-only">Solicitudes de préstamo de equipos</caption>
                 <thead>
-                    <tr style={{ backgroundColor: '#1f2937', color: 'white' }}>
-                        <th style={{ padding: '14px' }}>Equipo</th>
-                        <th style={{ padding: '14px' }}>Usuario</th>
-                        <th style={{ padding: '14px' }}>Retiro</th>
-                        <th style={{ padding: '14px' }}>Devolución</th>
-                        <th style={{ padding: '14px' }}>Estado</th>
-                        <th style={{ padding: '14px' }}>Detalle</th>
+                    <tr>
+                        <th scope="col">Equipo</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Retiro</th>
+                        <th scope="col">Devolución</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col"><span className="sr-only">Acciones</span></th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {solicitudes.map((solicitud, index) => (
-                        <tr
-                            key={solicitud.id}
-                            style={{
-                                backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc'
-                            }}
-                        >
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                {solicitud.equipoNombre || solicitud.equipoId}
-                            </td>
+                    {solicitudes.map((solicitud) => {
+                        const equipo = solicitud.equipoNombre || solicitud.equipoId;
 
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                {solicitud.usuarioNombre || solicitud.usuarioId}
-                            </td>
-
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                {solicitud.fechaRetiro}
-                            </td>
-
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                {solicitud.fechaDevolucion}
-                            </td>
-
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                <span
-                                    style={{
-                                        backgroundColor: obtenerColorEstado(solicitud.estado),
-                                        color: 'white',
-                                        padding: '5px 10px',
-                                        borderRadius: '20px'
-                                    }}
-                                >
-                                    {solicitud.estado}
-                                </span>
-                            </td>
-
-                            <td style={{ padding: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                                <Link to={`/solicitudes/${solicitud.id}`}>
-                                    Ver detalle
-                                </Link>
-                            </td>
-                        </tr>
-                    ))}
+                        return (
+                            <tr key={solicitud.id}>
+                                <td className="tabla-principal">{equipo}</td>
+                                <td>{solicitud.usuarioNombre || solicitud.usuarioId}</td>
+                                <td className="tabla-fecha">{solicitud.fechaRetiro}</td>
+                                <td className="tabla-fecha">{solicitud.fechaDevolucion}</td>
+                                <td>
+                                    <span className={claseEstado(solicitud.estado)}>
+                                        {solicitud.estado}
+                                    </span>
+                                </td>
+                                <td>
+                                    <Link
+                                        to={`/solicitudes/${solicitud.id}`}
+                                        className="tabla-link"
+                                        aria-label={`Ver detalle de la solicitud de ${equipo}`}
+                                    >
+                                        Ver detalle
+                                        <CaretRightIcon size={14} weight="bold" aria-hidden="true" />
+                                    </Link>
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>

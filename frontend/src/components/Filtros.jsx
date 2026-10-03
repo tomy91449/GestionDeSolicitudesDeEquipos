@@ -1,4 +1,8 @@
 import React from 'react';
+import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import './Filtros.css';
+
+const CATEGORIAS = ['Notebook', 'Proyector', 'Cámara', 'Tablet', 'Micrófono'];
 
 const Filtros = ({
     filtroNombre,
@@ -8,80 +12,32 @@ const Filtros = ({
 }) => {
 
     return (
-        <div
-            style={{
-                display: 'flex',
-                gap: '15px',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                padding: '20px',
-                backgroundColor: '#f8fafc',
-                borderRadius: '10px',
-                border: '1px solid #e5e7eb'
-            }}
-        >
-
-            <label htmlFor="filtro-nombre" className="sr-only">Buscar equipo por nombre</label>
-            <input
-                id="filtro-nombre"
-                type="search"
-                placeholder="Buscar equipo..."
-                value={filtroNombre}
-                onChange={(e) =>
-                    setFiltroNombre(e.target.value)
-                }
-                style={{
-                    flex: '1',
-                    minWidth: '250px',
-                    padding: '10px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '14px'
-                }}
-            />
+        <div className="filtros">
+            <div className="filtro-busqueda">
+                <MagnifyingGlassIcon size={18} className="filtro-busqueda-icono" aria-hidden="true" />
+                <label htmlFor="filtro-nombre" className="sr-only">Buscar equipo por nombre</label>
+                <input
+                    id="filtro-nombre"
+                    type="search"
+                    placeholder="Buscar equipo..."
+                    value={filtroNombre}
+                    onChange={(e) => setFiltroNombre(e.target.value)}
+                    className="filtro-campo"
+                />
+            </div>
 
             <label htmlFor="filtro-categoria" className="sr-only">Filtrar por categoría</label>
             <select
                 id="filtro-categoria"
                 value={filtroCategoria}
-                onChange={(e) =>
-                    setFiltroCategoria(e.target.value)
-                }
-                style={{
-                    minWidth: '180px',
-                    padding: '10px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    backgroundColor: 'white'
-                }}
+                onChange={(e) => setFiltroCategoria(e.target.value)}
+                className="filtro-campo filtro-categoria"
             >
-                <option value="">
-                    Todas las categorías
-                </option>
-
-                <option value="Notebook">
-                    Notebook
-                </option>
-
-                <option value="Proyector">
-                    Proyector
-                </option>
-
-                <option value="Cámara">
-                    Cámara
-                </option>
-
-                <option value="Tablet">
-                    Tablet
-                </option>
-
-                <option value="Micrófono">
-                    Micrófono
-                </option>
-
+                <option value="">Todas las categorías</option>
+                {CATEGORIAS.map((categoria) => (
+                    <option key={categoria} value={categoria}>{categoria}</option>
+                ))}
             </select>
-
         </div>
     );
 };

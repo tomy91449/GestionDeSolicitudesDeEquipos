@@ -1,0 +1,50 @@
+/* Filtros del catálogo con el mismo estilo de campo que los formularios */
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filtro-busqueda {
+    position: relative;
+    flex: 1 1 260px;
+}
+
+.filtro-busqueda-icono {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-subtle);
+    pointer-events: none;
+}
+
+.filtro-campo {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    outline: none;
+    color: var(--text-strong);
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+
+.filtro-busqueda .filtro-campo { padding-left: 40px; }
+
+.filtro-campo::placeholder { color: var(--text-subtle); }
+
+.filtro-campo:focus {
+    border-color: rgba(99, 130, 255, .8);
+    background: rgba(99, 130, 255, .08);
+    box-shadow: 0 0 0 3px rgba(99, 130, 255, .25);
+}
+
+.filtro-categoria { flex: 0 1 220px; }
+
+.filtro-campo option { background: #0d1230; color: #fff; }

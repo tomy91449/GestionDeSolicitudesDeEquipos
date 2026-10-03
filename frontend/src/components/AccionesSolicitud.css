@@ -1,0 +1,65 @@
+/* Acciones de admin/encargado, con los mismos botones que el detalle */
+
+.acciones-titulo {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+}
+
+.acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.accion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.accion:disabled { opacity: .55; }
+
+/* Acción principal: el degradé de la marca */
+.accion-aprobar {
+    border: none;
+    background: var(--accent-gradient);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 4px 16px rgba(79, 110, 255, .35);
+}
+.accion-aprobar:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(79, 110, 255, .5);
+}
+
+.accion-rechazar {
+    border: 1px solid rgba(220, 38, 38, .45);
+    background: rgba(220, 38, 38, .08);
+    color: var(--error-text);
+}
+.accion-rechazar:hover:not(:disabled) {
+    background: rgba(220, 38, 38, .18);
+    border-color: var(--error-text);
+}
+
+.accion-devolver {
+    border: 1px solid rgba(79, 110, 255, .5);
+    background: rgba(79, 110, 255, .08);
+    color: var(--accent-link);
+}
+.accion-devolver:hover:not(:disabled) {
+    background: rgba(79, 110, 255, .18);
+    border-color: var(--accent-link);
+}

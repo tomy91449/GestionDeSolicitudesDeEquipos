@@ -1,97 +1,49 @@
 import React from 'react';
+import './Tabla.css';
 
-const TablaEquipos = ({ equipos }) => {
+const ESTADOS = ['disponible', 'prestado', 'mantenimiento'];
 
-    const obtenerColorEstado = (estado) => {
+const claseEstado = (estado) => {
+    const valor = (estado || '').toLowerCase();
+    return ESTADOS.includes(valor) ? `estado estado-${valor}` : 'estado estado-cancelada';
+};
 
-        switch (estado?.toLowerCase()) {
+const TablaEquipos = ({ equipos = [] }) => {
 
-            case 'disponible':
-                return '#2e7d32';
-
-            case 'prestado':
-                return '#d32f2f';
-
-            case 'mantenimiento':
-                return '#f57c00';
-
-            default:
-                return '#616161';
-        }
-    };
+    if (equipos.length === 0) {
+        return <p className="tabla-vacia">No hay equipos que coincidan con la búsqueda.</p>;
+    }
 
     return (
-        <div style={{ overflowX: 'auto' }}>
-
-            <table
-                style={{
-                    width: '100%',
-                    borderCollapse: 'collapse',
-                    backgroundColor: '#fff'
-                }}
-            >
-
+        <div className="tabla-contenedor" role="region" aria-label="Tabla de equipos" tabIndex={0}>
+            <table className="tabla">
+                <caption className="sr-only">Catálogo de equipos</caption>
                 <thead>
-                    <tr
-                        style={{
-                            backgroundColor: '#1f2937',
-                            color: 'white'
-                        }}
-                    >
-                        <th style={{ padding: '14px' }}>Código</th>
-                        <th style={{ padding: '14px' }}>Nombre</th>
-                        <th style={{ padding: '14px' }}>Categoría</th>
-                        <th style={{ padding: '14px' }}>Estado</th>
-                        <th style={{ padding: '14px' }}>Ubicación</th>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Ubicación</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
                     {equipos.map((equipo) => (
-
                         <tr key={equipo.id}>
-
-                            <td style={{ padding: '12px' }}>
-                                {equipo.codigoInventario}
-                            </td>
-
-                            <td style={{ padding: '12px' }}>
-                                {equipo.nombre}
-                            </td>
-
-                            <td style={{ padding: '12px' }}>
-                                {equipo.categoria}
-                            </td>
-
-                            <td style={{ padding: '12px' }}>
-                                <span
-                                    style={{
-                                        backgroundColor:
-                                            obtenerColorEstado(
-                                                equipo.estado
-                                            ),
-                                        color: 'white',
-                                        padding: '5px 10px',
-                                        borderRadius: '20px'
-                                    }}
-                                >
+                            <td className="tabla-codigo">{equipo.codigoInventario}</td>
+                            <td className="tabla-principal">{equipo.nombre}</td>
+                            <td>{equipo.categoria}</td>
+                            <td>
+                                <span className={claseEstado(equipo.estado)}>
                                     {equipo.estado}
                                 </span>
                             </td>
-
-                            <td style={{ padding: '12px' }}>
-                                {equipo.ubicacion}
-                            </td>
-
+                            <td>{equipo.ubicacion}</td>
                         </tr>
-
                     ))}
-
                 </tbody>
-
             </table>
-
         </div>
     );
 };

@@ -17,6 +17,7 @@ import ListadoSolicitudes from '../pages/ListadoSolicitudes';
 import DetalleSolicitud from '../pages/DetalleSolicitud';
 import ResumenAdmin from '../pages/ResumenAdmin';
 import ListadoEquipos from '../pages/ListadoEquipos';
+import NotFound from '../pages/NotFound';
 
 const AppRouter = () => {
     const { user } = useContext(AuthContext);
@@ -86,11 +87,7 @@ const AppRouter = () => {
                 {/* 404 */}
                 <Route
                     path="*"
-                    element={
-                        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-                            <h2>404 - Página no encontrada</h2>
-                        </div>
-                    }
+                    element={<NotFound />}
                 />
 
             </Routes>
