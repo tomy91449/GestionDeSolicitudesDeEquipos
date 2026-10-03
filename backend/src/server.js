@@ -1,3 +1,11 @@
+// Validar la configuración antes de cargar el resto de la app
+try {
+    require('./config/env');
+} catch (err) {
+    console.error(`Error de configuración: ${err.message}`);
+    process.exit(1);
+}
+
 const app = require('./app');
 const { initDB, closeDB } = require('./database/db');
 

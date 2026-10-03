@@ -51,9 +51,12 @@ Requisitos: **Node.js 18+** y npm. Se necesitan dos terminales.
 ```bash
 cd backend
 npm install
+cp .env.example .env       # y completá JWT_SECRET con una clave aleatoria
 npm run dev                # crea database.sqlite y las tablas si no existen
 node src/seeders/seed.js   # en otra terminal, la primera vez: carga 8 equipos de ejemplo
 ```
+
+Para generar una clave: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. Si falta `JWT_SECRET`, el servidor no arranca y avisa qué hacer. El archivo `.env` está en `.gitignore`: no lo subas.
 
 El seeder no duplica equipos si se ejecuta más de una vez. `database.sqlite` está en `.gitignore`; para empezar de cero alcanza con borrarlo.
 
@@ -176,5 +179,4 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 
 - **Los tests de solicitudes son permisivos:** por ejemplo, "Solicitud válida" también pasa si la API responde `400`, así que no alcanzan para detectar regresiones.
 - **`POST /api/auth/register` acepta `rol` desde el body**, así que cualquiera puede registrarse como `admin` llamando a la API directamente.
-- **La clave JWT está hardcodeada** en `auth.service.js` y `auth.middleware.js`. Debería ir en un `.env` (`dotenv` ya está instalado).
 - **Dependencias sin uso:** `bcrypt`, `pg`, `pg-hstore` y `sequelize`.

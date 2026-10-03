@@ -84,4 +84,30 @@ describe("Pruebas del Módulo 1: Autenticación", () => {
         expect(response.statusCode)
             .toBe(400);
     });
+
+    it("7. Debe aceptar el token del login y rechazar uno firmado con otra clave", async () => {
+        const jwt = require('jsonwebtoken');
+
+        const login = await request(app)
+            .post('/api/auth/login')
+            .send({ email: testUser.email, password: testUser.password });
+
+        const conTokenValido = await request(app)
+            .get('/api/solicitudes')
+            .set('Authorization', `Bearer ${login.body.token}`);
+
+        expect(conTokenValido.statusCode).toBe(200);
+
+        // Misma información, pero firmado con la clave que antes estaba hardcodeada
+        const tokenFalso = jwt.sign(
+            { id: login.body.usuario.id, nombre: 'x', rol: 'admin' },
+            'clave_secreta_utn_dds'
+        );
+
+        const conTokenFalso = await request(app)
+            .get('/api/solicitudes')
+            .set('Authorization', `Bearer ${tokenFalso}`);
+
+        expect(conTokenFalso.statusCode).toBe(401);
+    });
 });

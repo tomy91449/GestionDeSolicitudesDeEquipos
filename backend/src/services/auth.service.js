@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
-
-const SECRET_KEY = "clave_secreta_utn_dds";
+const { JWT_SECRET } = require('../config/env');
 
 const registrarUsuario = async (
     nombre,
@@ -46,7 +45,7 @@ const loginUsuario = async (
             nombre: usuario.nombre,
             rol: usuario.rol
         },
-        SECRET_KEY,
+        JWT_SECRET,
         {
             expiresIn: '2h'
         }
