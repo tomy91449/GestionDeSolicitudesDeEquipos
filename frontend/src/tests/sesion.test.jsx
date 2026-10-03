@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, waitFor, cleanup } from '@testing-library/react';
+import { render, waitFor, cleanup, screen } from '@testing-library/react';
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // Las páginas piden datos al backend: devolvemos listas vacías
@@ -60,5 +60,17 @@ describe('Sesión al recargar la página', () => {
         await new Promise((r) => setTimeout(r, 50));
 
         expect(window.location.pathname).toBe('/admin');
+    });
+
+    test('el login muestra un aviso cuando la sesión venció', async () => {
+        abrirApp('/login?sesion=vencida');
+
+        expect(await screen.findByText('Tu sesión venció. Iniciá sesión de nuevo.')).toBeTruthy();
+    });
+
+    test('el login normal no muestra el aviso', () => {
+        abrirApp('/login');
+
+        expect(screen.queryByText(/Tu sesión venció/)).toBeNull();
     });
 });
