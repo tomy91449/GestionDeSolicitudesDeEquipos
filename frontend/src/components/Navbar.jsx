@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Package, SignOut } from '@phosphor-icons/react';
 import { AuthContext } from '../context/AuthContext';
+import './Navbar.css';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
@@ -19,39 +21,50 @@ const Navbar = () => {
         return null;
     }
 
-    return (
-        <nav
-            style={{
-                backgroundColor: '#1f2937',
-                padding: '15px 30px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}
-        >
-            <div style={{ display: 'flex', gap: '20px' }}>
-                <Link to="/solicitudes" style={{ color: 'white', textDecoration: 'none' }}>
-                    Solicitudes
-                </Link>
-                <Link to="/solicitudes/nueva" style={{ color: 'white', textDecoration: 'none' }}>
-                    Nueva Solicitud
-                </Link>
-                <Link to="/equipos" style={{ color: 'white', textDecoration: 'none' }}>
-                    Equipos
-                </Link>
-                {(user?.rol === 'admin' || user?.rol === 'encargado') && (
-                    <Link to="/admin" style={{ color: 'white', textDecoration: 'none' }}>
-                        Panel Admin
-                    </Link>
-                )}
-            </div>
+    const esGestor = user?.rol === 'admin' || user?.rol === 'encargado';
 
-            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                <span style={{ color: 'white' }}>{user?.nombre}</span>
-                <button
-                    onClick={handleLogout}
-                    style={{ cursor: 'pointer' }}
-                >
+    const ruta = location.pathname;
+
+    // "Solicitudes" queda activo también en el detalle (/solicitudes/:id),
+    // pero no en /solicitudes/nueva, que tiene su propio link
+    const links = [
+        { to: '/equipos', texto: 'Equipos', activo: ruta === '/equipos' },
+        {
+            to: '/solicitudes',
+            texto: 'Solicitudes',
+            activo: ruta.startsWith('/solicitudes') && ruta !== '/solicitudes/nueva'
+        },
+        { to: '/solicitudes/nueva', texto: 'Nueva solicitud', activo: ruta === '/solicitudes/nueva' },
+        ...(esGestor ? [{ to: '/admin', texto: 'Panel admin', activo: ruta === '/admin' }] : [])
+    ];
+
+    return (
+        <nav className="nav-barra" aria-label="Principal">
+            <Link to="/equipos" className="nav-marca">
+                <span className="nav-marca-icono" aria-hidden="true">
+                    <Package size={18} weight="bold" color="#fff" />
+                </span>
+                Control de Equipamiento
+            </Link>
+
+            <ul className="nav-links">
+                {links.map(({ to, texto, activo }) => (
+                    <li key={to}>
+                        <Link
+                            to={to}
+                            className="nav-link"
+                            aria-current={activo ? 'page' : undefined}
+                        >
+                            {texto}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+
+            <div className="nav-usuario">
+                {user?.nombre && <span className="nav-nombre">{user.nombre}</span>}
+                <button type="button" onClick={handleLogout} className="nav-salir">
+                    <SignOut size={16} weight="bold" aria-hidden="true" />
                     Cerrar sesión
                 </button>
             </div>

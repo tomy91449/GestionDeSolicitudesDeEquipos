@@ -1,0 +1,132 @@
+/* Barra superior con la misma estética de vidrio que las tarjetas */
+.nav-barra {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 12px 24px;
+    background: rgba(6, 8, 24, .72);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--glass-border);
+    font-family: var(--font-sans);
+}
+
+/* Línea degradada inferior, como el borde superior de las tarjetas */
+.nav-barra::after {
+    content: '';
+    position: absolute;
+    left: 40px; right: 40px; bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), var(--accent-lilac), transparent);
+    opacity: .6;
+    pointer-events: none;
+}
+
+.nav-marca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-strong);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -.2px;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+}
+
+.nav-marca-icono {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-gradient);
+    box-shadow: 0 4px 14px rgba(79, 110, 255, .4);
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .2s ease, background-color .2s ease;
+}
+
+.nav-link:hover {
+    color: var(--text-strong);
+    background: rgba(255, 255, 255, .06);
+}
+
+/* Página actual: texto blanco y subrayado con el degradé de la marca */
+.nav-link[aria-current="page"] {
+    color: var(--text-strong);
+    background: rgba(79, 110, 255, .12);
+}
+
+.nav-link[aria-current="page"]::after {
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px; bottom: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-gradient);
+}
+
+.nav-usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-nombre {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.nav-salir {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(79, 110, 255, .5);
+    background: rgba(79, 110, 255, .08);
+    color: var(--accent-link);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color .2s ease, border-color .2s ease;
+}
+
+.nav-salir:hover {
+    background: rgba(79, 110, 255, .18);
+    border-color: var(--accent-link);
+}
+
+/* En pantallas chicas la marca y el usuario quedan arriba y los links abajo */
+@media (max-width: 720px) {
+    .nav-barra { padding: 10px 16px; }
+    .nav-links { order: 3; width: 100%; }
+    .nav-nombre { display: none; }
+}
