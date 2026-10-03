@@ -179,9 +179,3 @@ Si un usuario sin el rol necesario entra a `/admin`, lo redirige a `/solicitudes
 - Contraseñas hasheadas con bcrypt.
 - El payload del JWT contiene solo `id`, `nombre` y `rol`.
 - `verifyToken` responde `401` si falta el token o si es inválido o expiró. `verifyRole([...])` responde `403` si el rol no está permitido.
-
----
-
-## Problemas conocidos
-
-- **Los tests de solicitudes son permisivos:** por ejemplo, "Solicitud válida" también pasa si la API responde `400`, así que no alcanzan para detectar regresiones.
