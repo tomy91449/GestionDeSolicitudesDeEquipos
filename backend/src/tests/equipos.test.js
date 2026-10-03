@@ -158,6 +158,15 @@ describe('Equipos - alta, edición y baja (admin)', () => {
         expect(response.body.error).toMatch(/estado es obligatorio/i);
     });
 
+    test('Debe rechazar un equipo sin ubicación con un mensaje claro', async () => {
+        const { ubicacion, ...sinUbicacion } = nuevoEquipo('VAL-004');
+
+        const response = await crear(sinUbicacion);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toMatch(/ubicación es obligatoria/i);
+    });
+
     test('Debe rechazar un estado que no existe', async () => {
         const response = await crear(nuevoEquipo('VAL-002', { estado: 'roto' }));
 

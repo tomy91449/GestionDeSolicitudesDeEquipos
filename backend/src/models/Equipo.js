@@ -39,6 +39,9 @@ class Equipo {
         if (!datos.categoria)
             errores.push('La categoría es obligatoria');
 
+        if (!datos.ubicacion)
+            errores.push('La ubicación es obligatoria');
+
         if (
             datos.estado &&
             !ESTADOS_VALIDOS.includes(datos.estado)
