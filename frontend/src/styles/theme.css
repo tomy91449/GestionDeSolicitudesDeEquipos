@@ -1,0 +1,116 @@
+/*
+ * Tema global de la app. Conserva la estética original (fondo azul marino,
+ * glassmorphism y acento azul → violeta) y centraliza lo que antes se
+ * repetía en cada página, más las reglas de accesibilidad que valen para
+ * todas: foco visible y movimiento reducido.
+ */
+
+:root {
+    /* Fondo */
+    --bg-gradient: linear-gradient(135deg, #060818 0%, #0d1230 40%, #0a1628 70%, #050d1f 100%);
+    --bg-base: #0a1028;
+
+    /* Acento (degradé de la marca) */
+    --accent-blue: #4f6eff;
+    --accent-violet: #7c3aed;
+    --accent-lilac: #a78bfa;
+    --accent-link: #818cf8;
+    --accent-gradient: linear-gradient(135deg, var(--accent-blue), var(--accent-violet));
+
+    /* Texto: los niveles atenuados cumplen contraste 4.5:1 sobre el fondo */
+    --text-strong: #ffffff;
+    --text-body: rgba(255, 255, 255, .85);
+    --text-muted: rgba(255, 255, 255, .62);
+    --text-subtle: rgba(255, 255, 255, .52);
+
+    /* Vidrio */
+    --glass-bg: rgba(255, 255, 255, .04);
+    --glass-border: rgba(255, 255, 255, .1);
+    --glass-blur: blur(24px);
+    --divider: rgba(255, 255, 255, .08);
+
+    /* Estados (texto claro sobre fondo translúcido) */
+    --estado-pendiente: #fbbf24;
+    --estado-aprobada: #34d399;
+    --estado-rechazada: #f87171;
+    --estado-devuelta: #60a5fa;
+    --estado-cancelada: #9ca3af;
+    --estado-disponible: #34d399;
+    --estado-prestado: #f87171;
+    --estado-mantenimiento: #fbbf24;
+
+    --error-bg: rgba(220, 38, 38, .15);
+    --error-border: rgba(220, 38, 38, .35);
+    --error-text: #fca5a5;
+    --success-bg: rgba(16, 185, 129, .15);
+    --success-border: rgba(16, 185, 129, .35);
+    --success-text: #6ee7b7;
+    --warning-bg: rgba(245, 158, 11, .15);
+    --warning-border: rgba(245, 158, 11, .35);
+    --warning-text: #fcd34d;
+
+    --focus-ring: #a5b4fc;
+    --radius-sm: 8px;
+    --radius-md: 10px;
+    --radius-lg: 20px;
+    --font-sans: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+
+    color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+    min-height: 100vh;
+    background: var(--bg-base);
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visible solo con teclado; los inputs ya tienen su propio estilo de foco */
+:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+
+button, a, select, [role="button"] { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+/* Texto solo para lectores de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+}
+
+/* Íconos alineados con el texto que acompañan */
+.icono { flex-shrink: 0; vertical-align: -0.15em; }
+
+/* Mensajes de error / éxito / aviso */
+.alerta {
+    display: flex; align-items: flex-start; gap: 8px;
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+.alerta-error   { background: var(--error-bg);   border: 1px solid var(--error-border);   color: var(--error-text); }
+.alerta-exito   { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-text); }
+.alerta-aviso   { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); }
+
+/* Respetar la preferencia del sistema de reducir el movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
